@@ -12,13 +12,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db, isFirebaseConfigured } from "@/lib/firebase";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-04-10",
-});
-
-const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET!;
+function getStripe(): Stripe {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) {
+    throw new Error("STRIPE_SECRET_KEY is not set");
+  }
+  return new Stripe(key, { apiVersion: "2024-04-10" });
+}
 
 // Map Stripe price IDs to subscription plans
 const PRICE_TO_PLAN: Record<string, string> = {
@@ -31,6 +33,14 @@ const PRICE_TO_PLAN: Record<string, string> = {
 };
 
 export async function POST(req: NextRequest) {
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!process.env.STRIPE_SECRET_KEY || !webhookSecret) {
+    return NextResponse.json({ error: "Stripe is not configured" }, { status: 503 });
+  }
+  if (!isFirebaseConfigured) {
+    return NextResponse.json({ error: "Firebase is not configured" }, { status: 503 });
+  }
+
   const body      = await req.text();
   const signature = req.headers.get("stripe-signature");
 
@@ -38,9 +48,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No signature" }, { status: 400 });
   }
 
+  const stripe = getStripe();
+
   let event: Stripe.Event;
   try {
-    event = stripe.webhooks.constructEvent(body, signature, WEBHOOK_SECRET);
+    event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
   } catch (err) {
     console.error("[Stripe webhook] Signature verification failed:", err);
     return NextResponse.json({ error: "Webhook signature verification failed" }, { status: 400 });

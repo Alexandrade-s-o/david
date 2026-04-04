@@ -1,5 +1,5 @@
-import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { initializeApp, getApps, getApp, type FirebaseApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider, type Auth } from "firebase/auth";
 import {
   getFirestore,
   collection,
@@ -21,11 +21,12 @@ import {
   writeBatch,
   type QueryConstraint,
 } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import type { Firestore } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL, type FirebaseStorage } from "firebase/storage";
 import { getAnalytics, isSupported } from "firebase/analytics";
 
 // ── CONFIG ────────────────────────────────────────────────────
-// Store these in .env.local — NEVER hardcode
+// Store these in .env.local / Vercel — NEVER hardcode secrets in repo
 const firebaseConfig = {
   apiKey:            process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
   authDomain:        process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
@@ -36,22 +37,36 @@ const firebaseConfig = {
   measurementId:     process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// Singleton — safe for Next.js SSR/SSG
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+const nonEmpty = (v: string | undefined) => Boolean(v && v.trim().length > 0);
 
-export const auth = getAuth(app);
-export const db   = getFirestore(app);
-export const storage = getStorage(app);
+/** False during `next build` on Vercel until you add env vars — avoids invalid-api-key at import time */
+export const isFirebaseConfigured =
+  nonEmpty(process.env.NEXT_PUBLIC_FIREBASE_API_KEY) &&
+  nonEmpty(process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN) &&
+  nonEmpty(process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) &&
+  nonEmpty(process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET) &&
+  nonEmpty(process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID) &&
+  nonEmpty(process.env.NEXT_PUBLIC_FIREBASE_APP_ID);
+
+let firebaseApp: FirebaseApp | undefined;
+if (isFirebaseConfigured) {
+  firebaseApp = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+}
+
+// Cast when missing so existing call sites type-check; guard with isFirebaseConfigured before server use
+export const auth: Auth = firebaseApp ? getAuth(firebaseApp) : (null as unknown as Auth);
+export const db: Firestore = firebaseApp ? getFirestore(firebaseApp) : (null as unknown as Firestore);
+export const storage: FirebaseStorage = firebaseApp ? getStorage(firebaseApp) : (null as unknown as FirebaseStorage);
 
 export const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: "select_account" });
 
 // Analytics — client-side only
 export const getFirebaseAnalytics = async () => {
-  if (typeof window !== "undefined" && (await isSupported())) {
-    return getAnalytics(app);
+  if (!firebaseApp || typeof window === "undefined" || !(await isSupported())) {
+    return null;
   }
-  return null;
+  return getAnalytics(firebaseApp);
 };
 
 // ── COLLECTION REFS ───────────────────────────────────────────
