@@ -8,19 +8,19 @@
 
 /* ── CSS VARIABLES ───────────────────────────────────────────── */
 :root {
-  /* Ultra Purple & Yellow Palette */
-  --bg-primary: #2e1065;   /* Deep Imperial Purple */
-  --bg-card: #3b1482;      /* Medium Purple Surface (for contrast) */
-  --text-primary: #f8fafc;
-  --text-secondary: #e0e7ff;
-  --border: rgba(251, 191, 36, 0.1); /* Yellowish or Pure Purple Border */
+  /* Aligned with marketing landing (light, purple + yellow) */
+  --bg-primary: #ffffff;
+  --bg-card: #ffffff;
+  --text-primary: #4b4b4b;
+  --text-secondary: #777777;
+  --border: #e5e5e5;
 
-  /* Pure Yellow Accents */
-  --lp-bright: #fbbf24;    /* Golden Star */
+  --lp-bright: #ffc800;
+  --lp-purple: #8b5cf6;
   --lp-white: #ffffff;
 
-  --scroll-thumb: var(--lp-bright);
-  --scroll-track: var(--bg-primary);
+  --scroll-thumb: #8b5cf6;
+  --scroll-track: #f3f4f6;
 }
 
 .dark {
@@ -42,10 +42,13 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
   min-height: 100vh;
+  min-height: 100dvh;
   overflow-x: hidden;
 }
 
@@ -221,55 +224,56 @@ body {
            transition-all duration-700 ease-out;
   }
 
-  /* ── Landing parity (app shell) ───────────────────────────── */
+  /* ── App shell = same language as marketing landing ─────────── */
   .lpa-page {
-    @apply min-h-screen bg-[#2e1065] text-white font-bold overflow-x-hidden
-           selection:bg-[#fbbf24] selection:text-[#2e1065];
+    @apply min-h-screen bg-landing-bg text-landing-text font-bold overflow-x-hidden
+           selection:bg-landing-yellow selection:text-landing-text;
   }
   .lpa-nav-shell {
-    @apply flex w-full items-center justify-between gap-4 rounded-full border-4 border-[#fbbf24]
-           bg-[#3b1482] px-6 py-4 shadow-2xl sm:px-8;
+    @apply flex w-full items-center justify-between gap-4 rounded-2xl border-2 border-landing-border border-b-4
+           bg-white px-6 py-3 shadow-sm sm:px-8;
   }
   .lpa-card {
-    @apply rounded-[2.5rem] border-4 border-[#fbbf24]/25 bg-[#3b1482] shadow-2xl;
+    @apply rounded-3xl border-2 border-landing-border border-b-8 bg-white shadow-sm;
   }
   .lpa-card-interactive {
-    @apply lpa-card transition-all hover:border-[#fbbf24];
+    @apply lpa-card transition-all duration-300 hover:-translate-y-1 hover:border-landing-purple/35 hover:shadow-md;
   }
   .lpa-btn-gold {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border-0 bg-[#fbbf24] px-6 py-3
-           text-xs font-black uppercase tracking-widest text-[#2e1065] shadow-lg transition-all
-           hover:bg-white active:scale-95;
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl border-b-4 border-landing-yellowDark bg-landing-yellow
+           px-6 py-3 text-xs font-black uppercase tracking-widest text-landing-text shadow-sm transition-all
+           hover:bg-landing-yellowHover active:translate-y-0.5 active:border-b-2;
   }
   .lpa-btn-outline {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border-4 border-[#fbbf24]
-           bg-transparent px-6 py-3 text-xs font-black uppercase tracking-widest text-white
-           transition-all hover:bg-[#fbbf24] hover:text-[#2e1065] active:scale-95;
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-landing-border border-b-4 bg-white
+           px-6 py-3 text-xs font-black uppercase tracking-widest text-landing-purple transition-all
+           hover:bg-landing-surface hover:border-landing-purple/40 active:translate-y-0.5 active:border-b-2;
   }
   .lpa-input {
-    @apply w-full rounded-2xl border-2 border-[#fbbf24]/40 bg-[#2e1065]/90 px-4 py-3 text-sm text-white
-           placeholder:text-white/35 focus:border-[#fbbf24] focus:outline-none focus:ring-2 focus:ring-[#fbbf24]/60;
+    @apply w-full rounded-xl border-2 border-landing-border bg-white px-4 py-3 text-sm text-landing-text
+           placeholder:text-landing-faint focus:border-landing-purple focus:outline-none focus:ring-2 focus:ring-landing-purple/25;
   }
   .lpa-label {
-    @apply mb-2 block text-[10px] font-black uppercase tracking-[0.2em] text-[#fbbf24];
+    @apply mb-2 block text-[10px] font-black uppercase tracking-[0.2em] text-landing-muted;
   }
   .lpa-muted {
-    @apply text-xs font-black uppercase tracking-wider text-white/60;
+    @apply text-xs font-black uppercase tracking-wider text-landing-faint;
   }
   .lpa-section-title {
-    @apply text-lg font-black uppercase tracking-tight text-white md:text-2xl;
+    @apply text-lg font-black uppercase tracking-tight text-landing-text md:text-2xl;
   }
   .lpa-link {
-    @apply text-[10px] font-black uppercase tracking-[0.2em] text-[#fbbf24] transition-colors hover:text-white;
+    @apply text-[10px] font-black uppercase tracking-[0.2em] text-landing-purple transition-colors hover:text-landing-purpleDark;
   }
   .lpa-pill-tag {
-    @apply inline-flex items-center rounded-full border-2 border-[#fbbf24] px-3 py-1 text-[10px] font-black uppercase tracking-widest text-[#fbbf24];
+    @apply inline-flex items-center rounded-full border-2 border-landing-border bg-landing-surface px-3 py-1 text-[10px]
+           font-black uppercase tracking-widest text-landing-purple;
   }
   .lpa-progress-track {
-    @apply h-2 w-full overflow-hidden rounded-full border-2 border-[#fbbf24]/30 bg-[#2e1065];
+    @apply h-2 w-full overflow-hidden rounded-full border-2 border-landing-border bg-landing-surface;
   }
   .lpa-progress-fill {
-    @apply h-full rounded-full bg-[#fbbf24];
+    @apply h-full rounded-full bg-landing-yellow;
   }
 }
 

@@ -48,12 +48,12 @@ export default function ClassesPage() {
                 href={`/classroom/${row.id}`}
                 className="lpa-card-interactive flex items-center gap-4 rounded-[2rem] p-5"
               >
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-2 border-[#fbbf24]/40 bg-[#2e1065]">
-                  <Video className="h-7 w-7 text-[#fbbf24]" />
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-2 border-landing-border bg-landing-surface">
+                  <Video className="h-7 w-7 text-landing-purple" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h2 className="truncate font-black uppercase tracking-tight text-white">{row.title}</h2>
-                  <p className="text-[10px] font-black uppercase tracking-wider text-white/45">
+                  <h2 className="truncate font-black uppercase tracking-tight text-landing-text">{row.title}</h2>
+                  <p className="text-[10px] font-black uppercase tracking-wider text-landing-faint">
                     {row.teacherName} · {row.cefrLevel} · {row.durationMinutes} min
                   </p>
                 </div>

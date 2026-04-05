@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp, type FirebaseApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, type Auth } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, type Auth, type User as FirebaseUser } from "firebase/auth";
 import {
   getFirestore,
   collection,
@@ -102,12 +102,46 @@ export function fromFirestore<T>(data: Record<string, unknown>): T {
 
 // ── USER QUERIES ──────────────────────────────────────────────
 export async function getUserProfile(uid: string) {
+  if (!isFirebaseConfigured || !db) return null;
   const snap = await getDoc(doc(db, Collections.USERS, uid));
   if (!snap.exists()) return null;
   return fromFirestore<import("../types").UserProfile>({ id: snap.id, ...snap.data() });
 }
 
+/** Crea el documento de usuario en Firestore si no existe (p. ej. primer login con Google). */
+export async function ensureStudentProfile(user: FirebaseUser) {
+  if (!isFirebaseConfigured || !db) return;
+  const ref = doc(db, Collections.USERS, user.uid);
+  const snap = await getDoc(ref);
+  if (snap.exists()) return;
+  await setDoc(ref, {
+    uid: user.uid,
+    email: user.email ?? "",
+    displayName: user.displayName ?? "Usuario",
+    photoURL: user.photoURL ?? null,
+    role: "student",
+    subscription: "free",
+    subscriptionExpiresAt: null,
+    stripeCustomerId: null,
+    xp: 0,
+    level: 1,
+    currentPlanet: "planet-rose",
+    streak: 0,
+    lastActivityAt: serverTimestamp(),
+    badges: [],
+    enrolledCourses: [],
+    completedLessons: [],
+    prefersDarkMode: false,
+    notificationsEnabled: true,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    language: "es",
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+}
+
 export async function updateUserProfile(uid: string, data: Partial<import("../types").UserProfile>) {
+  if (!isFirebaseConfigured || !db) return;
   await updateDoc(doc(db, Collections.USERS, uid), {
     ...data,
     updatedAt: serverTimestamp(),

@@ -8,6 +8,21 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        landing: {
+          bg: "#ffffff",
+          surface: "#F4F4F4",
+          text: "#4B4B4B",
+          muted: "#777777",
+          faint: "#AFAFAF",
+          border: "#E5E5E5",
+          // "purple" token → brand blue
+          purple: "#2E5782",
+          purpleDark: "#1D3D5C",
+          // "yellow" token → brand orange
+          yellow: "#F56B1F",
+          yellowDark: "#C4530D",
+          yellowHover: "#E05C10",
+        },
         star: {
           50:  "#FFFDF0",
           100: "#FFF8D6",

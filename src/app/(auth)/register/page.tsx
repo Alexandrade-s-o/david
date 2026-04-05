@@ -136,11 +136,11 @@ export default function RegisterPage() {
       >
         <div className="lpa-card p-8">
           <div className="mb-8 text-center">
-            <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-[#fbbf24] shadow-lg">
-              <Star className="h-8 w-8 fill-[#2e1065] text-[#2e1065]" />
+            <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-xl border-b-4 border-landing-purpleDark bg-landing-purple shadow-sm">
+              <Star className="h-8 w-8 fill-landing-yellow text-landing-yellow" strokeWidth={2.5} />
             </div>
-            <h1 className="text-2xl font-black uppercase tracking-tight text-white">Begin your journey</h1>
-            <p className="mt-2 text-xs font-bold uppercase tracking-wider text-white/55">
+            <h1 className="text-2xl font-black uppercase tracking-tight text-landing-text">Begin your journey</h1>
+            <p className="mt-2 text-xs font-bold uppercase tracking-wider text-landing-muted">
               Create your account — explore the academy
             </p>
           </div>
@@ -153,16 +153,16 @@ export default function RegisterPage() {
           <button
             onClick={handleGoogleSignUp}
             disabled={loading}
-            className="mb-6 flex w-full items-center justify-center gap-3 rounded-full border-4 border-[#fbbf24] bg-white py-3 px-4 text-xs font-black uppercase tracking-widest text-[#2e1065] transition-all hover:bg-[#fbbf24] disabled:opacity-50"
+            className="mb-6 flex w-full items-center justify-center gap-3 rounded-2xl border-2 border-landing-border border-b-4 bg-white py-3 px-4 text-xs font-black uppercase tracking-widest text-landing-purple transition-all hover:bg-landing-surface disabled:opacity-50"
           >
             <Chrome className="h-5 w-5 text-blue-600" />
             Continue with Google
           </button>
 
           <div className="mb-6 flex items-center gap-3">
-            <div className="h-px flex-1 bg-[#fbbf24]/25" />
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/45">Or email</span>
-            <div className="h-px flex-1 bg-[#fbbf24]/25" />
+            <div className="h-px flex-1 bg-landing-border" />
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-landing-faint">Or email</span>
+            <div className="h-px flex-1 bg-landing-border" />
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -206,7 +206,7 @@ export default function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#fbbf24]/70 transition-colors hover:text-white"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-landing-faint transition-colors hover:text-landing-purple"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -237,7 +237,7 @@ export default function RegisterPage() {
             >
               {loading ? (
                 <span className="flex items-center gap-2">
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#2e1065] border-t-transparent" />
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-landing-purple border-t-transparent" />
                   Creating account...
                 </span>
               ) : (
@@ -249,15 +249,15 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          <p className="mt-6 text-center text-[10px] font-black uppercase tracking-widest text-white/50">
+          <p className="mt-6 text-center text-[10px] font-black uppercase tracking-widest text-landing-faint">
             Have an account?{" "}
-            <Link href="/login" className="text-[#fbbf24] transition-colors hover:text-white">
+            <Link href="/login" className="text-landing-purple transition-colors hover:text-landing-purpleDark">
               Sign in
             </Link>
           </p>
-          <p className="mt-3 text-center text-[10px] font-bold uppercase leading-relaxed text-white/35">
-            By signing up you agree to our <a href="#" className="text-[#fbbf24]/80 underline">Terms</a> and{" "}
-            <a href="#" className="text-[#fbbf24]/80 underline">Privacy</a>.
+          <p className="mt-3 text-center text-[10px] font-bold uppercase leading-relaxed text-landing-faint/80">
+            By signing up you agree to our <a href="#" className="text-landing-purple underline">Terms</a> and{" "}
+            <a href="#" className="text-landing-purple underline">Privacy</a>.
           </p>
         </div>
       </motion.div>

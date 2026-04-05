@@ -5,7 +5,7 @@
 
 import { create } from "zustand";
 import { onAuthStateChanged, signOut, type User } from "firebase/auth";
-import { auth, getUserProfile, updateUserProfile } from "@/lib/firebase";
+import { auth, getUserProfile, updateUserProfile, isFirebaseConfigured } from "@/lib/firebase";
 import type { UserProfile } from "@/types";
 
 interface AuthState {
@@ -29,6 +29,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   initialized: false,
 
   initialize: () => {
+    if (!isFirebaseConfigured) {
+      set({ user: null, profile: null, loading: false, initialized: true });
+      return () => {};
+    }
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
@@ -46,20 +50,24 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   signOut: async () => {
+    if (!isFirebaseConfigured) {
+      set({ user: null, profile: null });
+      return;
+    }
     await signOut(auth);
     set({ user: null, profile: null });
   },
 
   refreshProfile: async () => {
     const { user } = get();
-    if (!user) return;
+    if (!user || !isFirebaseConfigured) return;
     const profile = await getUserProfile(user.uid);
     set({ profile });
   },
 
   updateProfile: async (data: Partial<UserProfile>) => {
     const { user, profile } = get();
-    if (!user || !profile) return;
+    if (!user || !profile || !isFirebaseConfigured) return;
     await updateUserProfile(user.uid, data);
     set({ profile: { ...profile, ...data } });
   },

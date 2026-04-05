@@ -36,25 +36,25 @@ export default function VocabReviewPage() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.96 }}
             onClick={() => setFlipped(!flipped)}
-            className="lpa-card-interactive flex min-h-[220px] w-full max-w-sm flex-col items-center justify-center border-[#fbbf24]/40 p-8 text-center focus:outline-none focus:ring-2 focus:ring-[#fbbf24]"
+            className="lpa-card-interactive flex min-h-[220px] w-full max-w-sm flex-col items-center justify-center p-8 text-center focus:outline-none focus:ring-2 focus:ring-landing-purple/40"
           >
             {!flipped ? (
               <>
-                <span className="mb-4 text-[10px] font-black uppercase tracking-[0.35em] text-[#fbbf24]">
+                <span className="mb-4 text-[10px] font-black uppercase tracking-[0.35em] text-landing-purple">
                   English
                 </span>
-                <span className="text-4xl font-black uppercase tracking-tight text-white">{card.word}</span>
-                <span className="mt-6 text-[10px] font-black uppercase tracking-widest text-white/40">
+                <span className="text-4xl font-black uppercase tracking-tight text-landing-text">{card.word}</span>
+                <span className="mt-6 text-[10px] font-black uppercase tracking-widest text-landing-faint">
                   Tap for translation
                 </span>
               </>
             ) : (
               <>
-                <span className="mb-4 text-[10px] font-black uppercase tracking-[0.35em] text-[#fbbf24]">
+                <span className="mb-4 text-[10px] font-black uppercase tracking-[0.35em] text-landing-purple">
                   Translation
                 </span>
-                <span className="mb-4 text-3xl font-black uppercase tracking-tight text-white">{card.translation}</span>
-                <p className="text-xs font-bold uppercase italic leading-relaxed text-white/60">
+                <span className="mb-4 text-3xl font-black uppercase tracking-tight text-landing-text">{card.translation}</span>
+                <p className="text-xs font-bold uppercase italic leading-relaxed text-landing-muted">
                   “{card.example}”
                 </p>
               </>

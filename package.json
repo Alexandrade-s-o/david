@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "clean": "node scripts/clean-next.cjs",
+    "free:3000": "node scripts/free-port.cjs 3000",
     "dev": "next dev",
-    "dev:clean": "npm run clean && next dev",
+    "dev:clean": "node scripts/free-port.cjs 3000 && npm run clean && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

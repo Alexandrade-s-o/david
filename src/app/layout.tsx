@@ -53,11 +53,12 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#2e1065" },
-    { media: "(prefers-color-scheme: dark)", color: "#2e1065" },
+    { media: "(prefers-color-scheme: light)", color: "#8B5CF6" },
+    { media: "(prefers-color-scheme: dark)", color: "#8B5CF6" },
   ],
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -66,7 +67,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body
         className={`
           ${inter.variable} ${playfair.variable} ${caveat.variable}
-          font-body antialiased bg-[#2e1065] text-white transition-colors duration-300
+          font-body antialiased bg-landing-bg text-landing-text transition-colors duration-300
         `}
       >
         {children}
@@ -75,14 +76,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           toastOptions={{
             className: "font-body text-sm",
             style: {
-              background: "#3b1482",
-              color: "#fff",
-              border: "2px solid #fbbf24",
+              background: "#ffffff",
+              color: "#4B4B4B",
+              border: "2px solid #E5E5E5",
+              borderBottomWidth: "4px",
+              borderBottomColor: "#8B5CF6",
               borderRadius: "16px",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.35)",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
             },
             success: {
-              iconTheme: { primary: "#fbbf24", secondary: "#2e1065" },
+              iconTheme: { primary: "#FFC800", secondary: "#4B4B4B" },
             },
           }}
         />

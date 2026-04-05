@@ -1,74 +1,62 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import {
   BookOpen, Star, Flame, Trophy, Video,
-  ChevronRight, Play, Lock, CheckCircle, TrendingUp, Users,
+  ChevronRight, Play, Lock, CheckCircle, TrendingUp, Users, ArrowRight, Loader2,
 } from "lucide-react";
-import { PLANETS, type UserProfile, type Course, type LiveClass } from "@/types";
+import { PLANETS, type Course, type LiveClass } from "@/types";
 import Link from "next/link";
 import { LpaDashboardNav } from "@/components/LpaNav";
+import { useAuthStore } from "@/store/useAuthStore";
+import {
+  getPublishedCourses,
+  getUpcomingClasses,
+  getUserLessonProgress,
+  isFirebaseConfigured,
+} from "@/lib/firebase";
 
-const mockUser: Partial<UserProfile> = {
-  displayName: "Sophie Martin",
-  photoURL: null,
-  xp: 1240,
-  level: 8,
-  currentPlanet: "planet-fox",
-  streak: 14,
-  badges: ["first-lesson", "streak-7", "planet-rose-complete"],
-  subscription: "astronaut",
-};
-
-const mockCourses: Partial<Course>[] = [
-  { id: "c1", title: "Planet Rose: First Words", cefrLevel: "A1", coverImage: "/planets/planet-rose.svg", totalLessons: 12, enrolledCount: 3200, rating: 4.9 },
-  { id: "c2", title: "Planet Fox: Grammar Basics", cefrLevel: "A2", coverImage: "/planets/planet-fox.svg", totalLessons: 16, enrolledCount: 2100, rating: 4.8 },
-  { id: "c3", title: "Planet King: Conversations", cefrLevel: "B1", coverImage: "/planets/planet-king.svg", totalLessons: 20, enrolledCount: 1500, rating: 4.7 },
-];
-
-const mockClasses: Partial<LiveClass>[] = [
-  { id: "l1", title: "Travel Vocabulary Workshop", teacherName: "Ms. Emma Wells", type: "group", scheduledAt: new Date(Date.now() + 3600000 * 2), durationMinutes: 60, cefrLevel: "A2", enrolledStudents: ["a","b","c","d","e"], maxStudents: 8 },
-  { id: "l2", title: "1-on-1 Conversation Practice", teacherName: "Mr. James Holt", type: "one_on_one", scheduledAt: new Date(Date.now() + 3600000 * 5), durationMinutes: 45, cefrLevel: "B1", enrolledStudents: [], maxStudents: 1 },
-];
-
-function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | number }) {
+// ── STAT CARD ────────────────────────────────────────────────────
+function StatCard({ icon, label, value, accent }: { icon: React.ReactNode; label: string; value: string | number; accent?: boolean }) {
   return (
     <motion.div
-      whileHover={{ y: -4, scale: 1.02 }}
-      className="lpa-card-interactive flex items-center gap-4 p-5"
+      whileHover={{ y: -3 }}
+      className="flex items-center gap-3 rounded-2xl border-2 border-[#E5E5E5] border-b-4 bg-white p-4 transition-all sm:gap-4 sm:p-5"
     >
-      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#fbbf24] text-[#2e1065]">
+      <div className={`w-12 h-12 shrink-0 rounded-xl flex items-center justify-center border-b-2 ${accent ? "bg-[#F56B1F] border-[#C4530D] text-white" : "bg-[#F4F4F4] border-[#E5E5E5] text-[#2E5782]"}`}>
         {icon}
       </div>
       <div>
-        <div className="text-2xl font-black text-white">{value}</div>
-        <div className="text-[10px] font-black uppercase tracking-widest text-[#fbbf24]/80">{label}</div>
+        <div className="text-2xl font-black text-[#2E5782]">{value}</div>
+        <div className="text-[10px] font-extrabold uppercase tracking-widest text-[#AFAFAF]">{label}</div>
       </div>
     </motion.div>
   );
 }
 
+// ── XP PROGRESS ─────────────────────────────────────────────────
 function XPProgress({ xp, level }: { xp: number; level: number }) {
   const xpForCurrentLevel = (level - 1) * 200;
   const xpForNextLevel = level * 200;
   const progress = ((xp - xpForCurrentLevel) / (xpForNextLevel - xpForCurrentLevel)) * 100;
-
   return (
     <div className="flex items-center gap-3">
-      <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#fbbf24] bg-[#fbbf24] text-sm font-black text-[#2e1065] shadow-lg">
+      <div className="w-9 h-9 shrink-0 rounded-full bg-[#F56B1F] border-b-2 border-[#C4530D] text-white text-sm font-black flex items-center justify-center">
         {level}
       </div>
       <div className="flex-1">
-        <div className="mb-1 flex justify-between text-[10px] font-black uppercase tracking-wider text-white/70">
-          <span>{xp} XP</span>
-          <span>Next: {xpForNextLevel} XP</span>
+        <div className="mb-1.5 flex flex-col gap-0.5 text-[10px] font-black uppercase tracking-wider text-[#AFAFAF] min-[380px]:flex-row min-[380px]:justify-between">
+          <span className="truncate">{xp.toLocaleString()} XP</span>
+          <span className="truncate text-right">Siguiente: {xpForNextLevel.toLocaleString()} XP</span>
         </div>
-        <div className="lpa-progress-track">
+        <div className="h-2.5 w-full rounded-full bg-[#F4F4F4] border border-[#E5E5E5] overflow-hidden">
           <motion.div
-            className="lpa-progress-fill"
+            className="h-full rounded-full bg-[#F56B1F]"
             initial={{ width: 0 }}
             animate={{ width: `${Math.min(progress, 100)}%` }}
-            transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
+            transition={{ duration: 1.2, ease: "easeOut", delay: 0.3 }}
           />
         </div>
       </div>
@@ -76,108 +64,101 @@ function XPProgress({ xp, level }: { xp: number; level: number }) {
   );
 }
 
+// ── PLANET MAP ───────────────────────────────────────────────────
 function PlanetMap({ currentPlanet }: { currentPlanet: string }) {
   return (
-    <div className="lpa-card relative overflow-hidden p-6">
-      <div className="stars-bg absolute inset-0 opacity-40" />
-      <div className="relative z-10">
-        <h3 className="mb-4 text-xs font-black uppercase tracking-[0.35em] text-[#fbbf24]">Your galaxy</h3>
-        <div className="scrollbar-hide flex items-center gap-3 overflow-x-auto pb-2">
-          {PLANETS.map((planet, i) => {
-            const isCurrent = planet.slug === currentPlanet;
-            const isPast = PLANETS.findIndex((p) => p.slug === currentPlanet) > i;
-            const isFuture = !isCurrent && !isPast;
-
-            return (
-              <div key={planet.id} className="flex flex-shrink-0 items-center gap-2">
-                <motion.div
-                  whileHover={!isFuture ? { scale: 1.12 } : {}}
-                  className={`relative flex cursor-pointer flex-col items-center ${isFuture ? "opacity-40" : ""}`}
+    <div className="bg-white rounded-2xl border-2 border-[#E5E5E5] p-6">
+      <div className="flex items-center justify-between mb-5">
+        <h3 className="text-xs font-black uppercase tracking-[0.25em] text-[#AFAFAF]">Tu galaxia</h3>
+        <Link href="/courses" className="text-[10px] font-black uppercase tracking-widest text-[#2E5782] hover:text-[#F56B1F] transition-colors flex items-center gap-1">
+          Ver todo <ArrowRight className="w-3 h-3" />
+        </Link>
+      </div>
+      <div className="flex items-center gap-4 overflow-x-auto pb-1 scrollbar-hide">
+        {PLANETS.map((planet, i) => {
+          const isCurrent = planet.slug === currentPlanet;
+          const isPast = PLANETS.findIndex((p) => p.slug === currentPlanet) > i;
+          const isFuture = !isCurrent && !isPast;
+          return (
+            <div key={planet.id} className="flex shrink-0 items-center gap-3">
+              <motion.div
+                whileHover={!isFuture ? { scale: 1.08 } : {}}
+                className="flex flex-col items-center gap-2 relative cursor-pointer"
+              >
+                <div
+                  className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl relative border-2 transition-all
+                    ${isCurrent ? "border-[#F56B1F] border-b-4 shadow-sm" : "border-[#E5E5E5]"}
+                    ${isFuture ? "opacity-35" : ""}
+                    ${isPast ? "border-[#2E5782]" : ""}`}
+                  style={{ background: isFuture ? "#F4F4F4" : `${planet.color}22` }}
                 >
-                  <div
-                    className={`flex h-14 w-14 items-center justify-center rounded-full text-2xl transition-all ${
-                      isCurrent ? "shadow-lg ring-4 ring-[#fbbf24] animate-float" : ""
-                    }`}
-                    style={{ background: `radial-gradient(circle at 35% 35%, ${planet.color}cc, ${planet.color}44)` }}
-                  >
-                    {isFuture ? <Lock className="h-5 w-5 text-white" /> : planet.icon}
-                  </div>
+                  {isFuture ? <Lock className="w-5 h-5 text-[#AFAFAF]" /> : planet.icon}
                   {isPast && (
-                    <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-green-500">
-                      <CheckCircle className="h-3 w-3 text-white" />
+                    <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[#2E5782] flex items-center justify-center">
+                      <CheckCircle className="w-3 h-3 text-white" />
                     </div>
                   )}
                   {isCurrent && (
-                    <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#fbbf24]">
-                      <Star className="h-3 w-3 fill-[#2e1065] text-[#2e1065]" />
+                    <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[#F56B1F] flex items-center justify-center">
+                      <Star className="w-3 h-3 text-white fill-white" />
                     </div>
                   )}
-                  <span className="mt-1.5 text-[10px] font-black uppercase tracking-wider text-white/90">
-                    {planet.cefrLevel}
-                  </span>
-                </motion.div>
-                {i < PLANETS.length - 1 && (
-                  <div className="mx-1 h-px w-6 flex-shrink-0 bg-[#fbbf24]/30" />
-                )}
-              </div>
-            );
-          })}
-        </div>
+                </div>
+                <span className="text-[9px] font-black uppercase tracking-wider text-[#AFAFAF]">{planet.cefrLevel}</span>
+              </motion.div>
+              {i < PLANETS.length - 1 && <div className="w-6 h-px bg-[#E5E5E5] shrink-0" />}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 }
 
+// ── COURSE CARD ──────────────────────────────────────────────────
 function CourseCard({ course, progress }: { course: Partial<Course>; progress: number }) {
   const planet = PLANETS.find((p) => p.cefrLevel === course.cefrLevel);
-
   return (
-    <motion.div whileHover={{ y: -4 }} className="lpa-card-interactive overflow-hidden">
+    <motion.div whileHover={{ y: -4 }} className="bg-white rounded-2xl border-2 border-[#E5E5E5] border-b-4 overflow-hidden transition-all hover:border-[#F56B1F]/40">
       <div
-        className="relative flex h-32 items-center justify-center text-5xl"
-        style={{ background: `linear-gradient(135deg, ${planet?.color}55, ${planet?.color}22)` }}
+        className="h-28 flex items-center justify-center text-5xl relative"
+        style={{ background: `linear-gradient(135deg, ${planet?.color}22, ${planet?.color}08)` }}
       >
-        <span className="animate-float">{planet?.icon}</span>
-        <div className="absolute right-3 top-3">
-          <span className="lpa-pill-tag bg-[#2e1065]/60">{course.cefrLevel}</span>
-        </div>
+        <span>{planet?.icon}</span>
+        <span className="absolute top-3 right-3 text-[9px] font-black uppercase tracking-[0.15em] text-white bg-[#2E5782] rounded-lg px-2 py-1">
+          {course.cefrLevel}
+        </span>
       </div>
-
-      <div className="p-5">
-        <h4 className="mb-2 line-clamp-2 text-sm font-black uppercase tracking-tight text-white">{course.title}</h4>
-        <div className="mb-4 flex flex-wrap items-center gap-3 text-[10px] font-black uppercase tracking-wider text-white/50">
-          <span className="flex items-center gap-1">
-            <BookOpen className="h-3 w-3 text-[#fbbf24]" /> {course.totalLessons} lessons
-          </span>
-          <span className="flex items-center gap-1">
-            <Users className="h-3 w-3 text-[#fbbf24]" /> {course.enrolledCount?.toLocaleString()}
-          </span>
+      <div className="p-4">
+        <h4 className="text-sm font-black uppercase tracking-tight text-[#2E5782] mb-2 line-clamp-2">{course.title}</h4>
+        <div className="flex items-center gap-3 text-[9px] font-bold uppercase tracking-wider text-[#AFAFAF] mb-3">
+          <span className="flex items-center gap-1"><BookOpen className="w-3 h-3 text-[#F56B1F]" />{course.totalLessons} lecciones</span>
+          <span className="flex items-center gap-1"><Users className="w-3 h-3 text-[#F56B1F]" />{course.enrolledCount?.toLocaleString()}</span>
         </div>
-
-        <div className="mb-4">
-          <div className="mb-1.5 flex justify-between text-[10px] font-black uppercase tracking-wider text-white/60">
-            <span>Progress</span>
-            <span className="text-[#fbbf24]">{progress}%</span>
+        <div className="mb-3">
+          <div className="flex justify-between text-[9px] font-black uppercase mb-1 text-[#AFAFAF]">
+            <span>Progreso</span><span className="text-[#F56B1F]">{progress}%</span>
           </div>
-          <div className="lpa-progress-track">
+          <div className="h-2 rounded-full bg-[#F4F4F4] overflow-hidden">
             <motion.div
-              className="lpa-progress-fill"
+              className="h-full rounded-full bg-[#F56B1F]"
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
               transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
             />
           </div>
         </div>
-
-        <Link href={`/courses/${course.id}`} className="lpa-btn-gold w-full justify-center py-2.5 text-[10px]">
-          <Play className="h-3.5 w-3.5" />
-          {progress > 0 ? "Continue" : "Start"} learning
+        <Link href={`/courses/${course.id}`}
+          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[#2E5782] border-b-2 border-[#1D3D5C] text-white text-[9px] font-black uppercase tracking-widest hover:bg-[#1D3D5C] active:border-b-0 active:translate-y-[1px] transition-all">
+          <Play className="w-3 h-3 fill-current" />
+          {progress > 0 ? "Continuar" : "Comenzar"}
         </Link>
       </div>
     </motion.div>
   );
 }
 
+// ── CLASS CARD ───────────────────────────────────────────────────
 function ClassCard({ cls }: { cls: Partial<LiveClass> }) {
   const scheduledAt = cls.scheduledAt as Date;
   const timeUntil = scheduledAt.getTime() - Date.now();
@@ -185,129 +166,217 @@ function ClassCard({ cls }: { cls: Partial<LiveClass> }) {
   const minutesUntil = Math.floor((timeUntil % 3600000) / 60000);
 
   return (
-    <motion.div whileHover={{ x: 4 }} className="lpa-card-interactive flex items-center gap-4 rounded-[2rem] p-4">
-      <div
-        className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl border-2 border-[#fbbf24]/30 ${
-          cls.type === "one_on_one" ? "bg-[#2e1065]" : "bg-[#2e1065]"
-        }`}
-      >
-        <Video className="h-5 w-5 text-[#fbbf24]" />
-      </div>
-      <div className="min-w-0 flex-1">
-        <div className="truncate text-xs font-black uppercase tracking-tight text-white">{cls.title}</div>
-        <div className="text-[10px] font-bold uppercase tracking-wider text-white/50">
-          {cls.teacherName} · {cls.cefrLevel} · {cls.durationMinutes}min
+    <motion.div
+      whileHover={{ x: 3 }}
+      className="flex flex-col gap-3 rounded-2xl border-2 border-[#E5E5E5] border-b-4 bg-white p-4 transition-all sm:flex-row sm:items-center sm:gap-4"
+    >
+      <div className="flex items-start gap-3 sm:contents">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-[#E5E5E5] bg-[#F4F4F4]">
+          <Video className="h-4 w-4 text-[#2E5782]" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-xs font-black uppercase tracking-tight text-[#2E5782]">{cls.title}</div>
+          <div className="mt-0.5 truncate text-[9px] font-bold uppercase tracking-wide text-[#AFAFAF]">
+            {cls.teacherName} · {cls.cefrLevel} · {cls.durationMinutes}min
+          </div>
         </div>
       </div>
-      <div className="flex-shrink-0 text-right">
-        <div className="text-[10px] font-black text-[#fbbf24]">
+      <div className="flex shrink-0 items-center justify-between gap-3 sm:flex-col sm:items-end sm:justify-center sm:gap-1.5">
+        <div className="text-[9px] font-black text-[#F56B1F] sm:text-right">
           {hoursUntil > 0 ? `${hoursUntil}h ${minutesUntil}m` : `${minutesUntil}m`}
         </div>
-        <div className="text-[10px] font-black uppercase tracking-wider text-white/40">from now</div>
+        <Link
+          href={`/classroom/${cls.id}`}
+          className="inline-flex min-h-[44px] min-w-[5rem] items-center justify-center rounded-lg border-b-2 border-[#C4530D] bg-[#F56B1F] px-4 py-2 text-[9px] font-black uppercase tracking-widest text-white transition-all hover:bg-[#E05C10] active:translate-y-[1px] active:border-b-0 sm:min-h-0 sm:min-w-0 sm:px-3 sm:py-1.5"
+        >
+          Unirse
+        </Link>
       </div>
-      <Link href={`/classroom/${cls.id}`} className="lpa-btn-gold flex-shrink-0 py-2 px-3 text-[10px]">
-        Join
-      </Link>
     </motion.div>
   );
 }
 
+// ── PAGE ─────────────────────────────────────────────────────────
 export default function DashboardPage() {
-  const user = mockUser;
-  const firstName = user.displayName?.split(" ")[0] ?? "Explorer";
+  const { user, profile, loading: authLoading, initialize } = useAuthStore();
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [classes, setClasses] = useState<LiveClass[]>([]);
+  const [progressMap, setProgressMap] = useState<Record<string, number>>({});
+  const [dataLoading, setDataLoading] = useState(true);
+
+  // Iniciar listener de auth
+  useEffect(() => {
+    const unsub = initialize();
+    return unsub;
+  }, [initialize]);
+
+  // Cargar datos de Firebase cuando auth esté listo
+  useEffect(() => {
+    if (authLoading) return;
+    if (!isFirebaseConfigured) { setDataLoading(false); return; }
+
+    async function load() {
+      try {
+        const [fetchedCourses, fetchedClasses] = await Promise.all([
+          getPublishedCourses(),
+          getUpcomingClasses(5),
+        ]);
+        setCourses(fetchedCourses.slice(0, 3));
+        setClasses(fetchedClasses);
+
+        if (user) {
+          const entries = await Promise.all(
+            fetchedCourses.slice(0, 3).map(async (c) => {
+              const prog = await getUserLessonProgress(user.uid, c.id);
+              const pct = c.totalLessons > 0 ? Math.round((prog.length / c.totalLessons) * 100) : 0;
+              return [c.id, pct] as [string, number];
+            })
+          );
+          setProgressMap(Object.fromEntries(entries));
+        }
+      } catch (err) {
+        console.error("[Dashboard] load error:", err);
+      } finally {
+        setDataLoading(false);
+      }
+    }
+    load();
+  }, [authLoading, user]);
+
+  const loading = authLoading || dataLoading;
+  const firstName = profile?.displayName?.split(" ")[0] ?? user?.displayName?.split(" ")[0] ?? "Explorer";
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  const greeting = hour < 12 ? "Buenos días" : hour < 18 ? "Buenas tardes" : "Buenas noches";
+
+  const xp     = profile?.xp ?? 0;
+  const level  = profile?.level ?? 1;
+  const streak = profile?.streak ?? 0;
+  const badges = profile?.badges ?? [];
+  const completedCount = profile?.completedLessons?.length ?? 0;
+  const currentPlanet  = profile?.currentPlanet ?? "planet-rose";
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F9F9F9] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-[#2E5782]" />
+      </div>
+    );
+  }
 
   return (
-    <div className="lpa-page">
+    <div className="min-h-screen bg-[#F9F9F9] text-[#4B4B4B] overflow-x-hidden">
       <LpaDashboardNav firstName={firstName} />
 
-      <div className="mx-auto max-w-7xl px-4 pb-12">
+      <div className="mx-auto max-w-6xl space-y-6 px-3 py-6 sm:px-4 md:px-6 md:py-8">
+
+        {/* ── WELCOME CARD ── */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="lpa-card mb-8 p-6 md:p-8"
+          className="flex flex-col items-center gap-6 rounded-3xl border-2 border-[#E5E5E5] border-b-4 bg-white p-5 sm:p-6 md:flex-row md:p-8"
         >
-          <div className="flex flex-col gap-6 md:flex-row md:items-center">
-            <div className="flex-1">
-              <div className="mb-1 text-xs font-black uppercase tracking-[0.3em] text-[#fbbf24]">{greeting}</div>
-              <h1 className="mb-4 text-3xl font-black uppercase tracking-tight text-white md:text-5xl">
-                {firstName}!
-              </h1>
-              <div className="mb-4 flex flex-wrap items-center gap-2">
-                <div className="inline-flex items-center gap-1.5 rounded-full border-2 border-[#fbbf24]/40 bg-[#2e1065] px-3 py-1.5">
-                  <Flame className="h-4 w-4 text-[#fbbf24]" />
-                  <span className="text-xs font-black uppercase tracking-wider text-[#fbbf24]">
-                    {user.streak} day streak
-                  </span>
-                </div>
-                <div className="lpa-pill-tag gap-1">
-                  <Star className="h-3 w-3" />
-                  {user.xp?.toLocaleString()} XP
-                </div>
+          <div className="w-full min-w-0 flex-1">
+            <p className="mb-1 text-[10px] font-black uppercase tracking-[0.3em] text-[#AFAFAF]">{greeting}</p>
+            <h1 className="mb-4 text-2xl font-black uppercase tracking-tight text-[#2E5782] sm:text-3xl md:text-5xl">
+              {firstName}!
+            </h1>
+            <div className="flex flex-wrap gap-2 mb-5">
+              <div className="inline-flex items-center gap-1.5 rounded-xl border-2 border-[#E5E5E5] bg-[#FFF4EE] px-3 py-1.5">
+                <Flame className="w-4 h-4 text-[#F56B1F]" />
+                <span className="text-xs font-black uppercase tracking-wide text-[#F56B1F]">{streak} días seguidos</span>
               </div>
-              <XPProgress xp={user.xp ?? 0} level={user.level ?? 1} />
+              <div className="inline-flex items-center gap-1.5 rounded-xl border-2 border-[#E5E5E5] bg-[#F0F4FF] px-3 py-1.5">
+                <Star className="w-4 h-4 text-[#2E5782]" />
+                <span className="text-xs font-black uppercase tracking-wide text-[#2E5782]">{xp.toLocaleString()} XP</span>
+              </div>
             </div>
-            <div className="flex-shrink-0 text-7xl animate-float">
-              {PLANETS.find((p) => p.slug === user.currentPlanet)?.icon ?? "⭐"}
-            </div>
+            <XPProgress xp={xp} level={level} />
           </div>
+          <motion.div
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+            className="shrink-0 hidden md:block"
+          >
+            <Image src="/hero-mascot.png" alt="Ling" width={140} height={140} className="w-36 h-36 object-contain" />
+          </motion.div>
         </motion.div>
 
-        <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-          <StatCard icon={<BookOpen className="h-5 w-5" />} label="Lessons done" value={34} />
-          <StatCard icon={<Star className="h-5 w-5" />} label="Badges earned" value={(user.badges ?? []).length} />
-          <StatCard icon={<Trophy className="h-5 w-5" />} label="Weekly rank" value="#12" />
-          <StatCard icon={<TrendingUp className="h-5 w-5" />} label="This week XP" value={320} />
+        {/* ── STATS ── */}
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+          {[
+            { icon: <BookOpen className="w-5 h-5" />, label: "Lecciones", value: completedCount, accent: false },
+            { icon: <Star className="w-5 h-5" />, label: "Insignias", value: badges.length, accent: false },
+            { icon: <Trophy className="w-5 h-5" />, label: "Ranking", value: "—", accent: true },
+            { icon: <TrendingUp className="w-5 h-5" />, label: "XP total", value: xp, accent: false },
+          ].map((s, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }}>
+              <StatCard {...s} />
+            </motion.div>
+          ))}
         </div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mb-8">
-          <PlanetMap currentPlanet={user.currentPlanet ?? "planet-rose"} />
+        {/* ── PLANET MAP ── */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+          <PlanetMap currentPlanet={currentPlanet} />
         </motion.div>
 
-        <div className="grid gap-8 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="lpa-section-title">Your courses</h2>
-              <Link href="/courses" className="lpa-link flex items-center gap-1 text-xs">
-                View all <ChevronRight className="h-4 w-4" />
+        {/* ── COURSES + SIDEBAR ── */}
+        <div className="grid lg:grid-cols-3 gap-6">
+
+          {/* Courses */}
+          <div className="lg:col-span-2 space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-black uppercase tracking-tight text-[#2E5782]">Tus cursos</h2>
+              <Link href="/courses" className="text-[10px] font-black uppercase tracking-widest text-[#F56B1F] hover:text-[#C4530D] transition-colors flex items-center gap-1">
+                Ver todos <ChevronRight className="w-3 h-3" />
               </Link>
             </div>
-            <div className="grid gap-4 sm:grid-cols-3">
-              {mockCourses.map((course, i) => (
-                <CourseCard key={course.id} course={course} progress={[75, 30, 0][i]} />
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            <div>
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="lpa-section-title">Live classes</h2>
-                <Link href="/classes" className="lpa-link flex items-center gap-1 text-xs">
-                  Browse <ChevronRight className="h-4 w-4" />
-                </Link>
+            {courses.length === 0 ? (
+              <div className="bg-white rounded-2xl border-2 border-[#E5E5E5] p-8 text-center text-[#AFAFAF] text-sm font-bold">
+                No hay cursos disponibles aún.
               </div>
-              <div className="space-y-3">
-                {mockClasses.map((cls) => (
-                  <ClassCard key={cls.id} cls={cls} />
+            ) : (
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {courses.map((course) => (
+                  <CourseCard key={course.id} course={course} progress={progressMap[course.id] ?? 0} />
                 ))}
               </div>
-            </div>
+            )}
+          </div>
 
-            <motion.div whileHover={{ scale: 1.02 }} className="lpa-card-interactive relative cursor-pointer overflow-hidden p-5">
-              <div className="stars-bg absolute inset-0 opacity-30" />
-              <div className="relative z-10">
-                <div className="mb-2 text-3xl">🔁</div>
-                <h3 className="mb-1 font-black uppercase tracking-tight text-white">Vocab review</h3>
-                <p className="mb-4 text-xs font-bold uppercase leading-relaxed text-white/70">
-                  You have <strong className="text-[#fbbf24]">12 words</strong> due today.
-                </p>
-                <Link href="/vocab-review" className="lpa-btn-gold inline-flex py-2 px-4 text-[10px]">
-                  Review now
+          {/* Sidebar */}
+          <div className="space-y-5">
+
+            {/* Live Classes */}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-black uppercase tracking-tight text-[#2E5782]">Clases en vivo</h2>
+                <Link href="/classes" className="text-[10px] font-black uppercase tracking-widest text-[#F56B1F] hover:text-[#C4530D] transition-colors flex items-center gap-1">
+                  Ver más <ChevronRight className="w-3 h-3" />
                 </Link>
               </div>
-            </motion.div>
+              {classes.length === 0 ? (
+                <div className="bg-white rounded-2xl border-2 border-[#E5E5E5] p-6 text-center text-[#AFAFAF] text-xs font-bold">
+                  No hay clases programadas.
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {classes.map((cls) => <ClassCard key={cls.id} cls={cls} />)}
+                </div>
+              )}
+            </div>
+
+            {/* Vocab Review Widget */}
+            <div className="bg-[#2E5782] rounded-2xl border-b-4 border-[#1D3D5C] p-5 text-white">
+              <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/60 mb-1">Pendiente hoy</p>
+              <h3 className="text-2xl font-black mb-1">Vocabulario</h3>
+              <p className="text-sm font-bold text-white/70 mb-4 leading-snug">Tu revisión diaria de vocabulario está lista.</p>
+              <Link href="/vocab-review"
+                className="inline-flex items-center gap-2 rounded-xl bg-[#F56B1F] border-b-2 border-[#C4530D] px-4 py-2.5 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[#E05C10] active:border-b-0 active:translate-y-[1px] transition-all">
+                Revisar ahora <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
+
           </div>
         </div>
       </div>
