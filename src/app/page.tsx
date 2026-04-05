@@ -207,51 +207,90 @@ function Navbar() {
       </motion.nav>
 
       <AnimatePresence>
-      {open && (
-        <motion.div 
-          initial={{ opacity: 0 }} 
-          animate={{ opacity: 1 }} 
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[60] md:hidden" 
-          role="dialog" aria-modal="true" aria-label="Menú"
-        >
-          <button
-            type="button"
-            className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
-            aria-label="Cerrar menú"
-            onClick={() => setOpen(false)}
-          />
-          <motion.div
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-            className="absolute right-0 top-0 flex h-full w-[min(100%,19rem)] flex-col border-l-2 border-[#E5E5E5] bg-white shadow-2xl"
-            style={{ paddingTop: "max(1rem, env(safe-area-inset-top))" }}
+        {open && (
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] md:hidden" 
+            role="dialog" aria-modal="true" aria-label="Menú"
           >
-            <div className="flex flex-1 flex-col gap-1 p-4">
-              {links.map(([href, label]) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="rounded-xl px-4 py-3.5 text-sm font-extrabold uppercase tracking-widest text-[#2E5782] hover:bg-[#F4F4F4]"
+            <motion.button
+              type="button"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-[#2E5782]/40 backdrop-blur-md"
+              aria-label="Cerrar menú"
+              onClick={() => setOpen(false)}
+            />
+            <motion.div
+              initial={{ x: "100%", skewX: 5 }}
+              animate={{ x: 0, skewX: 0 }}
+              exit={{ x: "100%", skewX: -5 }}
+              transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
+              className="absolute right-0 top-0 flex h-full w-[min(100%,20rem)] flex-col border-l-2 border-[#E5E5E5] bg-white shadow-[-20px_0_50px_rgba(0,0,0,0.1)]"
+              style={{ paddingTop: "max(1.5rem, env(safe-area-inset-top))" }}
+            >
+              <div className="flex h-16 items-center justify-between px-6 mb-6">
+                <div className="flex items-center gap-2">
+                  <Image src="/hero-mascot.png" alt="Ling" width={32} height={32} className="h-8 w-8 object-contain" />
+                  <span className="text-xl font-black text-[#2E5782]">Ling</span>
+                </div>
+                <button 
                   onClick={() => setOpen(false)}
+                  className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-[#E5E5E5] text-[#2E5782]"
                 >
-                  {label}
-                </Link>
-              ))}
-              <div className="mt-4 flex flex-col gap-2 border-t-2 border-[#E5E5E5] pt-4">
-                <ButtonGhost href="/login" className="w-full justify-center py-3 text-sm" onClick={() => setOpen(false)}>
-                  Ingresar
-                </ButtonGhost>
-                <ButtonOrange href="/register" className="w-full justify-center py-3 text-sm" onClick={() => setOpen(false)}>
-                  Empieza ya
-                </ButtonOrange>
+                  <X className="h-6 w-6" strokeWidth={2.5} />
+                </button>
               </div>
-            </div>
+
+              <div className="flex flex-1 flex-col gap-2 p-4">
+                {links.map(([href, label], i) => (
+                  <motion.div
+                    key={href}
+                    initial={{ x: 50, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.1 + i * 0.05 }}
+                  >
+                    <Link
+                      href={href}
+                      className="group flex items-center justify-between rounded-2xl px-6 py-4 text-lg font-extrabold uppercase tracking-widest text-[#2E5782] hover:bg-[#F4F4F4] transition-all"
+                      onClick={() => setOpen(false)}
+                    >
+                      {label}
+                      <motion.span 
+                        initial={{ x: -10, opacity: 0 }}
+                        whileHover={{ x: 0, opacity: 1 }}
+                        className="text-[#F56B1F]"
+                      >→</motion.span>
+                    </Link>
+                  </motion.div>
+                ))}
+                
+                <motion.div 
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="mt-8 flex flex-col gap-3 border-t-2 border-[#E5E5E5] p-4"
+                >
+                  <ButtonGhost href="/login" className="w-full justify-center py-4 text-base" onClick={() => setOpen(false)}>
+                    Ingresar
+                  </ButtonGhost>
+                  <ButtonOrange href="/register" className="w-full justify-center py-4 text-base shadow-[0_10px_20px_rgba(245,107,31,0.2)]" onClick={() => setOpen(false)}>
+                    Empezar Ahora
+                  </ButtonOrange>
+                </motion.div>
+              </div>
+
+              <div className="p-8 text-center">
+                <p className="text-xs font-bold uppercase tracking-widest text-[#AFAFAF]">
+                  Aprende inglés con historias ✨
+                </p>
+              </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
+        )}
       </AnimatePresence>
     </>
   );
