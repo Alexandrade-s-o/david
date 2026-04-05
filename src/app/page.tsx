@@ -382,9 +382,8 @@ function HeroSection() {
             <motion.div
               style={{ scale: scaleImage, rotate: rotateImage }}
               animate={floatingAnimation}
-              drag
-              dragConstraints={{ left: -20, right: 20, top: -20, bottom: 20 }}
-              className="relative w-40 sm:w-64 md:w-[480px] drop-shadow-2xl cursor-grab active:cursor-grabbing"
+              whileTap={{ scale: 0.95 }}
+              className="relative w-40 sm:w-64 md:w-[480px] drop-shadow-2xl transition-all will-change-transform"
             >
               <Image
                 src="/hero-mascot.png"
@@ -499,11 +498,9 @@ function FeaturesSection() {
               key={i}
               variants={fadeInUp}
               custom={i + 1}
-              whileHover={{ y: -12, scale: 1.02, rotate: i % 2 === 0 ? 1 : -1, transition: { type: "spring", stiffness: 300 } }}
-              drag
-              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-              dragElastic={0.1}
-              className="relative cursor-grab active:cursor-grabbing rounded-3xl border-2 border-[#E5E5E5] border-b-[12px] bg-white p-8 pt-16 transition-all hover:shadow-[0_30px_60px_rgba(46,87,130,0.2)] sm:p-10 sm:pt-20"
+              whileHover={{ y: -8, scale: 1.01, rotate: i % 2 === 0 ? 0.5 : -0.5, transition: { type: "spring", stiffness: 200 } }}
+              whileTap={{ scale: 0.98 }}
+              className="relative rounded-3xl border-2 border-[#E5E5E5] border-b-[12px] bg-white p-8 pt-16 transition-all hover:shadow-[0_20px_40px_rgba(46,87,130,0.15)] sm:p-10 sm:pt-20 will-change-transform"
             >
               <div
                 className={`absolute -top-8 left-8 flex h-16 w-16 items-center justify-center rounded-2xl border-b-6 sm:-top-10 sm:left-10 sm:h-20 sm:w-20 ${f.bg} ${f.border}`}
@@ -548,11 +545,9 @@ function CurriculumSection() {
                 variants={popIn} custom={i + 2}
                 key={planet.id} 
                 animate={floatingAnimation}
-                whileHover={{ scale: 1.25, rotate: i % 2 === 0 ? 5 : -5, transition: { type: "spring", stiffness: 400 } }}
-                drag
-                dragConstraints={{ left: -50, right: 50, top: -50, bottom: 50 }}
-                dragElastic={0.4}
-                className={`relative z-10 flex flex-col items-center cursor-grab active:cursor-grabbing will-change-transform ${offsetClass}`}
+                whileHover={{ scale: 1.15, rotate: i % 2 === 0 ? 3 : -3, transition: { type: "spring", stiffness: 300 } }}
+                whileTap={{ scale: 0.95 }}
+                className={`relative z-10 flex flex-col items-center will-change-transform ${offsetClass}`}
               >
                 <motion.div 
                   whileHover={{ boxShadow: "0 0 30px rgba(46,87,130,0.6)" }}
