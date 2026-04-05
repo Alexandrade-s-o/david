@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display, Caveat } from "next/font/google";
 import { Toaster } from "react-hot-toast";
+import SmoothScroll from "@/components/SmoothScroll";
 import "./globals.css";
 
 const inter = Inter({
@@ -70,10 +71,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           font-body antialiased bg-landing-bg text-landing-text transition-colors duration-300
         `}
       >
-        {children}
-        <Toaster
-          position="top-right"
-          toastOptions={{
+        <SmoothScroll>
+          {children}
+          <Toaster
+            position="top-right"
+            toastOptions={{
             className: "font-body text-sm",
             style: {
               background: "#ffffff",
@@ -89,6 +91,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             },
           }}
         />
+        </SmoothScroll>
       </body>
     </html>
   );
