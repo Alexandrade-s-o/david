@@ -348,24 +348,25 @@ export default function LessonPage({
   // ── LESSON UI ─────────────────────────────────────────────────
   return (
     <div className="lpa-page flex flex-col">
-      <header className="sticky top-0 z-40 border-b-2 border-landing-border bg-white px-4 py-3 font-bold">
+      <header className="sticky top-0 z-40 border-b-2 border-landing-border bg-white px-4 py-4 font-handwritten shadow-sm">
         <div className="mx-auto flex max-w-2xl items-center gap-4">
-          <Link href={`/courses/${courseId}`} className="shrink-0 text-landing-purple transition-colors hover:text-landing-purpleDark" aria-label="Back">
-            <ArrowLeft className="h-6 w-6" />
+          <Link href={`/courses/${courseId}`} className="shrink-0 text-landing-purple transition-all hover:scale-110 active:scale-90" aria-label="Back">
+            <ArrowLeft className="h-7 w-7" />
           </Link>
           <div className="min-w-0 flex-1">
-            <div className="mb-1 truncate text-xs font-black uppercase tracking-widest text-landing-muted">{lesson.title}</div>
-            <div className="lpa-progress-track">
+            <div className="mb-2 truncate text-sm font-black uppercase tracking-widest text-landing-muted">{lesson.title}</div>
+            <div className="lpa-progress-track h-2.5">
               <motion.div
                 className="lpa-progress-fill"
+                initial={false}
                 animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.4 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
               />
             </div>
           </div>
-          <div className="flex shrink-0 items-center gap-1 rounded-full border-2 border-landing-yellow bg-landing-surface px-2.5 py-1 text-xs font-black text-landing-purple">
-            <Star className="h-3 w-3" />
-            {xpEarned} XP
+          <div className="flex shrink-0 items-center gap-2 rounded-2xl border-2 border-landing-yellow bg-landing-surface px-3 py-1.5 text-sm font-black text-landing-purple shadow-sm">
+            <Star className="h-4 w-4" />
+            {xpEarned} <span className="hidden sm:inline">XP</span>
           </div>
         </div>
       </header>
@@ -374,10 +375,11 @@ export default function LessonPage({
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
-            initial={{ opacity: 0, x: 40 }}
+            initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -40 }}
-            transition={{ duration: 0.3 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ type: "spring", stiffness: 400, damping: 35, mass: 0.8 }}
+            className="will-change-transform"
           >
             {/* Content block */}
             {isOnBlock && currentBlock && (

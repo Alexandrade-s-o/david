@@ -225,11 +225,11 @@ function Navbar() {
               onClick={() => setOpen(false)}
             />
             <motion.div
-              initial={{ x: "100%", skewX: 5 }}
-              animate={{ x: 0, skewX: 0 }}
-              exit={{ x: "100%", skewX: -5 }}
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
-              className="absolute right-0 top-0 flex h-full w-[min(100%,20rem)] flex-col border-l-2 border-[#E5E5E5] bg-white shadow-[-20px_0_50px_rgba(0,0,0,0.1)]"
+              className="absolute right-0 top-0 flex h-full w-[min(100%,20rem)] flex-col border-l-2 border-[#E5E5E5] bg-white shadow-[-20px_0_50px_rgba(0,0,0,0.1)] will-change-transform"
               style={{ paddingTop: "max(1.5rem, env(safe-area-inset-top))" }}
             >
               <div className="flex h-16 items-center justify-between px-6 mb-6">
@@ -245,24 +245,27 @@ function Navbar() {
                 </button>
               </div>
 
-              <div className="flex flex-1 flex-col gap-2 p-4">
+              <div className="flex flex-1 flex-col gap-2 p-6">
                 {links.map(([href, label], i) => (
                   <motion.div
                     key={href}
-                    initial={{ x: 50, opacity: 0 }}
+                    initial={{ x: 30, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.1 + i * 0.05 }}
+                    transition={{ delay: 0.1 + i * 0.05, type: "spring", stiffness: 300, damping: 30 }}
                   >
                     <Link
                       href={href}
-                      className="group flex items-center justify-between rounded-2xl px-6 py-4 text-lg font-extrabold uppercase tracking-widest text-[#2E5782] hover:bg-[#F4F4F4] transition-all"
+                      className="group flex items-center justify-between rounded-3xl p-6 text-3xl font-black text-[#AFAFAF] hover:bg-[#F4F4F4]/50 hover:text-[#2E5782] transition-transform active:scale-95 font-handwritten"
                       onClick={() => setOpen(false)}
                     >
-                      {label}
+                      <div className="flex items-center gap-6">
+                        <span className="text-xl text-[#F56B1F]/50 font-sans">0{i+1}</span>
+                        {label}
+                      </div>
                       <motion.span 
-                        initial={{ x: -10, opacity: 0 }}
-                        whileHover={{ x: 0, opacity: 1 }}
-                        className="text-[#F56B1F]"
+                        animate={{ x: [0, 5, 0] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                        className="text-[#F56B1F] text-2xl"
                       >→</motion.span>
                     </Link>
                   </motion.div>
@@ -272,13 +275,13 @@ function Navbar() {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.3 }}
-                  className="mt-8 flex flex-col gap-3 border-t-2 border-[#E5E5E5] p-4"
+                  className="mt-auto flex flex-col gap-4 border-t-2 border-[#E5E5E5] pt-12"
                 >
-                  <ButtonGhost href="/login" className="w-full justify-center py-4 text-base" onClick={() => setOpen(false)}>
+                  <ButtonGhost href="/login" className="w-full h-16 text-2xl" onClick={() => setOpen(false)}>
                     Ingresar
                   </ButtonGhost>
-                  <ButtonOrange href="/register" className="w-full justify-center py-4 text-base shadow-[0_10px_20px_rgba(245,107,31,0.2)]" onClick={() => setOpen(false)}>
-                    Empezar Ahora
+                  <ButtonOrange href="/register" className="w-full h-20 text-2xl shadow-[0_20px_40px_rgba(245,107,31,0.3)]" onClick={() => setOpen(false)}>
+                    Empieza ya
                   </ButtonOrange>
                 </motion.div>
               </div>
@@ -549,7 +552,7 @@ function CurriculumSection() {
                 drag
                 dragConstraints={{ left: -50, right: 50, top: -50, bottom: 50 }}
                 dragElastic={0.4}
-                className={`relative z-10 flex flex-col items-center cursor-grab active:cursor-grabbing ${offsetClass}`}
+                className={`relative z-10 flex flex-col items-center cursor-grab active:cursor-grabbing will-change-transform ${offsetClass}`}
               >
                 <motion.div 
                   whileHover={{ boxShadow: "0 0 30px rgba(46,87,130,0.6)" }}
@@ -595,12 +598,12 @@ function PricingSection() {
           >
             Nuestros <span className="text-[#F56B1F]">Planes</span>
           </motion.h2>
-          <motion.div variants={fadeInUp} custom={1} className="inline-flex max-w-full rounded-2xl border-2 border-[#E5E5E5] bg-[#F4F4F4] p-1.5 shadow-inner">
+          <motion.div variants={fadeInUp} custom={1} className="inline-flex max-w-full rounded-2xl border-2 border-[#E5E5E5] bg-[#F4F4F4]/50 p-2 shadow-inner">
             <button
               type="button"
               onClick={() => setYearly(false)}
-              className={`rounded-xl px-5 py-3 text-sm font-black uppercase tracking-widest transition-all ${
-                !yearly ? "bg-[#2E5782] text-white shadow-lg" : "text-[#AFAFAF] hover:bg-white hover:text-[#2E5782]"
+              className={`rounded-xl px-7 py-4 text-2xl font-black transition-all font-handwritten ${
+                !yearly ? "bg-[#2E5782] text-white shadow-lg" : "text-[#AFAFAF] hover:text-[#2E5782]"
               }`}
             >
               Mensual
@@ -608,11 +611,11 @@ function PricingSection() {
             <button
               type="button"
               onClick={() => setYearly(true)}
-              className={`rounded-xl px-5 py-3 text-sm font-black uppercase tracking-widest transition-all ${
-                yearly ? "bg-[#2E5782] text-white shadow-lg" : "text-[#AFAFAF] hover:bg-white hover:text-[#2E5782]"
+              className={`rounded-xl px-7 py-4 text-2xl font-black transition-all font-handwritten ${
+                yearly ? "bg-[#2E5782] text-white shadow-lg" : "text-[#AFAFAF] hover:text-[#2E5782]"
               }`}
             >
-              Anual -33%
+              Anual <span className="text-sm font-sans">-33%</span>
             </button>
           </motion.div>
         </div>
@@ -629,7 +632,7 @@ function PricingSection() {
                 key={tier.id} 
                 variants={fadeInUp} custom={i + 2}
                 whileHover={{ y: -15, scale: 1.05, rotate: i % 2 === 0 ? 1 : -1, zIndex: 10, transition: { type: "spring", stiffness: 300, damping: 15 } }}
-                className={`bg-white rounded-3xl border-2 border-b-[12px] ${borderCol} overflow-hidden flex flex-col transition-all`}
+                className={`bg-white rounded-3xl border-2 border-b-[12px] ${borderCol} overflow-hidden flex flex-col transition-all will-change-transform`}
               >
                 {recommended && (
                   <div className="bg-[#FFC800] text-center font-black uppercase text-xs py-2.5 tracking-widest text-[#2E5782]">
