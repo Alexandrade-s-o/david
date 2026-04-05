@@ -72,6 +72,8 @@ body {
   }
   .font-handwritten {
     font-family: var(--font-caveat);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
   }
 
   /* Star particle background */

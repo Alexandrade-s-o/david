@@ -56,7 +56,7 @@ const ButtonOrange = ({
   onClick?: () => void;
 }) => {
   const base =
-    "inline-flex items-center justify-center font-extrabold uppercase tracking-widest text-white bg-[#F56B1F] border-b-4 border-[#C4530D] hover:bg-[#E05C10] rounded-2xl active:border-b-0 active:translate-y-1 transition-all px-6 py-3 " +
+    "inline-flex items-center justify-center font-black tracking-wide text-white bg-[#F56B1F] border-b-4 border-[#C4530D] hover:bg-[#E05C10] rounded-2xl active:border-b-0 active:translate-y-1 transition-all px-8 py-4 text-xl font-handwritten " +
     className;
   
   const inner = (
@@ -81,7 +81,7 @@ const ButtonOrange = ({
 
 const ButtonNavy = ({ children, href, className = "" }: { children: React.ReactNode; href?: string; className?: string }) => {
   const base =
-    "inline-flex items-center justify-center font-extrabold uppercase tracking-widest text-white bg-[#2E5782] border-b-4 border-[#1D3D5C] hover:bg-[#141F57] rounded-2xl active:border-b-0 active:translate-y-1 transition-all px-6 py-3 " +
+    "inline-flex items-center justify-center font-black tracking-wide text-white bg-[#2E5782] border-b-4 border-[#1D3D5C] hover:bg-[#141F57] rounded-2xl active:border-b-0 active:translate-y-1 transition-all px-8 py-4 text-xl font-handwritten " +
     className;
   const inner = (
     <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex items-center justify-center w-full h-full">
@@ -104,7 +104,7 @@ const ButtonGhost = ({
   onClick?: () => void;
 }) => {
   const base =
-    "inline-flex items-center justify-center font-extrabold uppercase tracking-widest text-[#AFAFAF] hover:bg-[#F4F4F4] hover:text-[#2E5782] rounded-2xl transition-all px-6 py-3 " +
+    "inline-flex items-center justify-center font-black tracking-wide text-[#AFAFAF] hover:bg-[#F4F4F4] hover:text-[#2E5782] rounded-2xl transition-all px-6 py-3 text-lg font-handwritten " +
     className;
   if (href) {
     return (
@@ -122,7 +122,7 @@ const ButtonGhost = ({
 
 const ButtonOutline = ({ children, href, className = "" }: { children: React.ReactNode; href?: string; className?: string }) => {
   const base =
-    "inline-flex items-center justify-center font-extrabold uppercase tracking-widest text-[#2E5782] border-2 border-[#E5E5E5] border-b-4 hover:bg-[#F4F4F4] hover:border-[#D4D4D4] rounded-2xl active:border-b-2 active:translate-y-[2px] transition-all px-6 py-3 " +
+    "inline-flex items-center justify-center font-black tracking-wide text-[#2E5782] border-2 border-[#E5E5E5] border-b-4 hover:bg-[#F4F4F4] hover:border-[#D4D4D4] rounded-2xl active:border-b-2 active:translate-y-[2px] transition-all px-8 py-4 text-xl font-handwritten " +
     className;
   if (href) return <Link href={href} className={base}>{children}</Link>;
   return <button type="button" className={base}>{children}</button>;
@@ -175,12 +175,12 @@ function Navbar() {
             <span className="truncate text-lg font-extrabold tracking-tight text-[#2E5782] sm:text-xl">Ling</span>
           </Link>
 
-          <div className="hidden items-center gap-6 md:flex">
+          <div className="hidden items-center gap-10 md:flex">
             {links.map(([href, label]) => (
               <Link
                 key={href}
                 href={href}
-                className="text-sm font-extrabold uppercase tracking-widest text-[#AFAFAF] transition-colors hover:text-[#2E5782]"
+                className="text-xl font-bold text-[#AFAFAF] transition-transform hover:text-[#2E5782] hover:scale-110 font-handwritten"
               >
                 {label}
               </Link>
@@ -312,39 +312,34 @@ function HeroSection() {
   const rotateImage = useTransform(scrollYProgress, [0, 1], [0, 15]);
 
   return (
-    <section ref={ref} className="relative border-b-2 border-[#E5E5E5] bg-white pb-20 pt-[calc(6rem+env(safe-area-inset-top))] sm:pb-28 sm:pt-40 md:pb-36 md:pt-48 overflow-hidden">
+    <section ref={ref} className="relative border-b-2 border-[#E5E5E5] bg-white pb-32 pt-[calc(4rem+env(safe-area-inset-top))] sm:pb-28 sm:pt-40 md:pb-36 md:pt-48 overflow-hidden">
       <motion.div style={{ y: yBg }} className="absolute inset-0 bg-[#F4F4F4]/20 pointer-events-none" />
       
       {/* Dynamic Background Elements */}
       <motion.div 
-        animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-        className="absolute top-1/4 -left-20 w-96 h-96 bg-[#F56B1F]/10 rounded-full blur-[100px] pointer-events-none" 
-      />
-      <motion.div 
-        animate={{ y: [0, 50, 0], opacity: [0.2, 0.4, 0.2] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-1/4 -right-20 w-80 h-80 bg-[#2E5782]/10 rounded-full blur-[100px] pointer-events-none" 
+        animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+        className="absolute top-1/4 -left-20 w-96 h-96 bg-[#F56B1F]/5 rounded-full blur-[100px] pointer-events-none" 
       />
       
       <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-8 relative z-10">
         <div className="flex flex-col items-center gap-12 md:flex-row md:gap-24">
-          <motion.div style={{ y: yText, opacity: opacityText }} className="flex-1 text-center md:text-left">
+          <motion.div style={{ y: yText, opacity: opacityText }} className="flex-1 text-center md:text-left z-20">
             <motion.h1 
               initial={{ opacity: 0, x: -50, rotate: -2 }}
               animate={{ opacity: 1, x: 0, rotate: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="mb-8 text-4xl font-black leading-[1.1] tracking-tight text-[#2E5782] sm:text-5xl md:text-6xl lg:text-7xl font-handwritten"
+              className="mb-6 text-5xl font-black leading-[1] tracking-tight text-[#2E5782] sm:text-6xl md:text-7xl lg:text-8xl font-handwritten"
             >
               Aprende inglés <br />
-              <span className="text-[#F56B1F] inline-block relative">
+              <span className="text-[#F56B1F] inline-block relative py-2">
                 viviendo historias
                 <motion.div 
                   initial={{ scaleX: 0 }}
                   whileInView={{ scaleX: 1 }}
                   transition={{ delay: 0.8, duration: 0.8 }}
                   viewport={{ once: true }}
-                  className="absolute -bottom-2 left-0 right-0 h-2 bg-[#FFC800]/40 origin-left"
+                  className="absolute bottom-0 left-0 right-0 h-2 bg-[#FFC800]/40 origin-left"
                 />
               </span>
             </motion.h1>
@@ -353,9 +348,9 @@ function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.6 }}
-              className="mb-10 max-w-lg text-lg font-bold leading-relaxed text-[#555555] sm:text-xl md:text-2xl"
+              className="mb-10 max-w-lg text-2xl font-bold leading-relaxed text-[#555555] sm:text-3xl font-handwritten"
             >
-              Ling es la academia donde el idioma se aprende como un juego épico. Sumérgete en mundos, supera retos y gana fluidez real.
+              Ling es la academia donde el idioma se aprende como un juego épico.
             </motion.p>
             
             <motion.div 
@@ -364,31 +359,29 @@ function HeroSection() {
               transition={{ delay: 0.6, duration: 0.6 }}
               className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4"
             >
-              <ButtonOrange href="/register" className="h-16 px-10 text-lg shadow-[0_15px_30px_rgba(245,107,31,0.3)] w-full sm:w-auto">
+              <ButtonOrange href="/register" className="h-16 px-10 text-xl shadow-[0_15px_30px_rgba(245,107,31,0.3)] w-full sm:w-auto">
                 Empezar aventura
               </ButtonOrange>
-              <ButtonOutline href="#method" className="h-16 px-10 text-lg w-full sm:w-auto">
-                <Play className="h-5 w-5 mr-2 fill-current" />
+              <ButtonOutline href="#method" className="h-16 px-10 text-xl w-full sm:w-auto">
                 Ver método
               </ButtonOutline>
             </motion.div>
           </motion.div>
 
+          {/* Optimized Mascot for Mobile */}
           <motion.div 
-            initial={{ opacity: 0, scale: 0.5, rotate: 10, y: 50 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0, y: 0 }}
-            transition={{ duration: 1, type: "spring", bounce: 0.5 }}
-            style={{ scale: scaleImage, y: yText, rotate: rotateImage }}
-            className="mt-4 flex flex-1 justify-center md:mt-0 relative"
+            initial={{ opacity: 0, scale: 0.8, y: 50 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 1, type: "spring", bounce: 0.4 }}
+            className="relative flex flex-1 justify-center md:mt-0"
           >
-            <div className="absolute -inset-20 bg-[#FFC800]/30 rounded-full blur-[120px] -z-10 mix-blend-multiply opacity-60 animate-pulse" />
+            <div className="absolute -inset-10 bg-[#FFC800]/20 rounded-full blur-[80px] -z-10 mix-blend-multiply opacity-50" />
             <motion.div
+              style={{ scale: scaleImage, rotate: rotateImage }}
               animate={floatingAnimation}
               drag
-              dragConstraints={{ left: -30, right: 30, top: -30, bottom: 30 }}
-              dragElastic={0.3}
-              whileDrag={{ scale: 1.15, cursor: "grabbing" }}
-              className="relative w-full max-w-[min(100%,22rem)] drop-shadow-[0_35px_50px_rgba(0,0,0,0.25)] sm:max-w-xs md:w-[480px] md:max-w-none cursor-grab"
+              dragConstraints={{ left: -20, right: 20, top: -20, bottom: 20 }}
+              className="relative w-40 sm:w-64 md:w-[480px] drop-shadow-2xl cursor-grab active:cursor-grabbing"
             >
               <Image
                 src="/hero-mascot.png"
@@ -414,37 +407,37 @@ function ManifestoSection() {
   const opacityText = useTransform(scrollYProgress, [0.4, 0.8], [0, 1]);
 
   return (
-    <section id="method" ref={ref} className="relative border-b-2 border-[#E5E5E5] bg-[#2E5782] text-white px-4 py-20 sm:px-6 sm:py-32 overflow-hidden">
+    <section id="method" ref={ref} className="relative border-b-2 border-[#E5E5E5] bg-[#2E5782] text-white px-4 py-24 sm:px-6 sm:py-36 overflow-hidden font-handwritten">
       <motion.div 
         style={{ scale: scaleText, opacity: opacityText }}
         className="mx-auto max-w-4xl text-center flex flex-col items-center relative z-10"
       >
         <motion.span 
           animate={floatingAnimation}
-          className="inline-flex items-center gap-2 mb-6 uppercase tracking-[0.2em] font-extrabold text-[#AFAFAF] border-2 border-[#1D3D5C] bg-[#141F57] rounded-full px-5 py-2 text-sm shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+          className="inline-flex items-center gap-2 mb-8 uppercase tracking-[0.2em] font-black text-[#AFAFAF] border-2 border-[#1D3D5C] bg-[#141F57] rounded-full px-6 py-3 text-base shadow-[0_0_20px_rgba(255,255,255,0.1)]"
         >
           ✨ Nuestra Filosofía
         </motion.span>
         <motion.h2 
-          className="mb-8 text-3xl font-black leading-tight sm:text-4xl md:text-6xl font-handwritten"
+          className="mb-10 text-4xl font-black leading-tight sm:text-5xl md:text-7xl"
         >
           Las reglas gramaticales no te dan fluidez.
           <br className="hidden sm:block" />
           <motion.span 
             initial={{ rotate: 10, scale: 0.5, opacity: 0 }} 
-            whileInView={{ rotate: -2, scale: 1, opacity: 1 }} 
-            whileHover={{ scale: 1.1, rotate: 2, textShadow: "0px 0px 15px rgba(245,107,31,0.6)" }}
+            whileInView={{ rotate: -2, scale: 1.1, opacity: 1 }} 
+            whileHover={{ scale: 1.2, rotate: 2, textShadow: "0px 0px 15px rgba(245,107,31,0.6)" }}
             transition={{ delay: 0.2, type: "spring", bounce: 0.6 }}
             viewport={{ once: true }}
-            className="text-[#FFC800] inline-block mt-2 text-[1.2em] px-2 cursor-default"
+            className="text-[#FFC800] inline-block mt-4 text-[1.3em] px-4 cursor-default"
           >
             Las historias sí.
           </motion.span>
         </motion.h2>
         <motion.p 
-          className="mx-auto max-w-2xl text-base font-bold leading-relaxed text-[#D4D4D4] sm:text-lg md:text-xl"
+          className="mx-auto max-w-2xl text-xl font-bold leading-relaxed text-[#D4D4D4] sm:text-2xl md:text-3xl"
         >
-          Toda nuestra academia gira en torno a esta idea. Aprenderás inmerso en relatos donde cada decisión se siente como un juego real.
+          Toda nuestra academia gira en torno a esta idea.
         </motion.p>
       </motion.div>
     </section>
@@ -489,12 +482,12 @@ function FeaturesSection() {
         <div className="mb-20 text-center">
           <motion.h2 
             variants={fadeInUp} 
-            className="mb-4 text-4xl font-black text-[#2E5782] sm:text-6xl font-handwritten"
+            className="mb-6 text-5xl font-black text-[#2E5782] sm:text-7xl font-handwritten"
           >
             ¿Por qué <span className="text-[#F56B1F]">Ling</span>?
           </motion.h2>
-          <p className="mx-auto max-w-xl text-sm font-black uppercase tracking-[0.3em] text-[#AFAFAF]">
-            El método definitivo para dominar el inglés
+          <p className="mx-auto max-w-xl text-lg font-black uppercase tracking-[0.4em] text-[#AFAFAF] font-handwritten">
+            El método definitivo
           </p>
         </div>
         <div className="grid gap-8 sm:gap-10 md:grid-cols-2">
@@ -534,11 +527,11 @@ function CurriculumSection() {
       >
         <motion.h2 
           variants={fadeInUp} 
-          className="mb-6 text-4xl font-black text-[#2E5782] sm:text-6xl font-handwritten"
+          className="mb-10 text-5xl font-black text-[#2E5782] sm:text-8xl font-handwritten"
         >
           6 Planetas. <motion.span className="text-[#F56B1F]" initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3 }} viewport={{ once:true }}>1 Destino.</motion.span>
         </motion.h2>
-        <motion.p variants={fadeInUp} custom={1} className="mx-auto mb-20 max-w-xl text-lg font-bold text-[#555555] sm:text-xl">Tu ruta estructurada desde lo más básico hasta la maestría total.</motion.p>
+        <motion.p variants={fadeInUp} custom={1} className="mx-auto mb-24 max-w-2xl text-2xl font-bold text-[#555555] sm:text-3xl font-handwritten">Tu ruta hacia la maestría total.</motion.p>
 
         <div className="relative flex flex-col items-center gap-8 py-8">
           <motion.div 
@@ -739,7 +732,7 @@ function Footer() {
 // ── PAGE ────────────────────────────────────────────────────────
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-white font-sans text-[#4B4B4B] selection:bg-[#F56B1F] selection:text-white">
+    <main className="min-h-screen bg-white font-handwritten text-[#4B4B4B] selection:bg-[#F56B1F] selection:text-white">
       <Navbar />
       <HeroSection />
       <ManifestoSection />
