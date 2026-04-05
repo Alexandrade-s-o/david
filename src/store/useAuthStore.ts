@@ -22,61 +22,33 @@ interface AuthState {
   toggleDarkMode: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   profile: null,
-  loading: true,
-  initialized: false,
+  loading: false,
+  initialized: true,
 
   initialize: () => {
-    if (!isFirebaseConfigured) {
-      set({ user: null, profile: null, loading: false, initialized: true });
-      return () => {};
-    }
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        try {
-          const profile = await getUserProfile(user.uid);
-          set({ user, profile, loading: false, initialized: true });
-        } catch (err) {
-          console.error("Failed to load user profile:", err);
-          set({ user, profile: null, loading: false, initialized: true });
-        }
-      } else {
-        set({ user: null, profile: null, loading: false, initialized: true });
-      }
-    });
-    return unsubscribe;
+    // Pure frontend: no external DB connection for faster load
+    return () => {};
   },
 
   signOut: async () => {
-    if (!isFirebaseConfigured) {
-      set({ user: null, profile: null });
-      return;
-    }
-    await signOut(auth);
     set({ user: null, profile: null });
   },
 
-  refreshProfile: async () => {
-    const { user } = get();
-    if (!user || !isFirebaseConfigured) return;
-    const profile = await getUserProfile(user.uid);
-    set({ profile });
-  },
+  refreshProfile: async () => {},
 
   updateProfile: async (data: Partial<UserProfile>) => {
-    const { user, profile } = get();
-    if (!user || !profile || !isFirebaseConfigured) return;
-    await updateUserProfile(user.uid, data);
+    const { profile } = useAuthStore.getState();
+    if (!profile) return;
     set({ profile: { ...profile, ...data } });
   },
 
   toggleDarkMode: async () => {
-    const { profile, updateProfile } = get();
+    const { profile, updateProfile } = useAuthStore.getState();
     if (!profile) return;
     const next = !profile.prefersDarkMode;
-    // Apply to DOM immediately for snappy UX
     document.documentElement.classList.toggle("dark", next);
     await updateProfile({ prefersDarkMode: next });
   },

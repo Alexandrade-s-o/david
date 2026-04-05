@@ -297,6 +297,7 @@ function Navbar() {
 }
 
 // ── HERO ────────────────────────────────────────────────────────
+// ── HERO ────────────────────────────────────────────────────────
 function HeroSection() {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -304,69 +305,96 @@ function HeroSection() {
     offset: ["start start", "end start"],
   });
   
-  const yBg = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const yText = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const opacityText = useTransform(scrollYProgress, [0, 0.8, 1], [1, 0, 0]);
-  const scaleImage = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+  const yBg = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const yText = useTransform(scrollYProgress, [0, 1], ["0%", "80%"]);
+  const opacityText = useTransform(scrollYProgress, [0, 0.6, 1], [1, 0.8, 0]);
+  const scaleImage = useTransform(scrollYProgress, [0, 1], [1, 1.2]);
+  const rotateImage = useTransform(scrollYProgress, [0, 1], [0, 15]);
 
   return (
-    <section ref={ref} className="relative border-b-2 border-[#E5E5E5] bg-white pb-16 pt-[calc(5.5rem+env(safe-area-inset-top))] sm:pb-20 sm:pt-32 md:pb-24 md:pt-40 overflow-hidden">
-      <motion.div style={{ y: yBg }} className="absolute inset-0 bg-[#F4F4F4]/30 pointer-events-none" />
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 md:px-8 relative z-10">
-        <div className="flex flex-col items-center gap-10 md:flex-row md:gap-20">
+    <section ref={ref} className="relative border-b-2 border-[#E5E5E5] bg-white pb-20 pt-[calc(6rem+env(safe-area-inset-top))] sm:pb-28 sm:pt-40 md:pb-36 md:pt-48 overflow-hidden">
+      <motion.div style={{ y: yBg }} className="absolute inset-0 bg-[#F4F4F4]/20 pointer-events-none" />
+      
+      {/* Dynamic Background Elements */}
+      <motion.div 
+        animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+        className="absolute top-1/4 -left-20 w-96 h-96 bg-[#F56B1F]/10 rounded-full blur-[100px] pointer-events-none" 
+      />
+      <motion.div 
+        animate={{ y: [0, 50, 0], opacity: [0.2, 0.4, 0.2] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute bottom-1/4 -right-20 w-80 h-80 bg-[#2E5782]/10 rounded-full blur-[100px] pointer-events-none" 
+      />
+      
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-8 relative z-10">
+        <div className="flex flex-col items-center gap-12 md:flex-row md:gap-24">
           <motion.div style={{ y: yText, opacity: opacityText }} className="flex-1 text-center md:text-left">
             <motion.h1 
-              initial="hidden" animate="visible" variants={fadeInUp}
-              className="mb-6 text-3xl font-extrabold leading-[1.12] tracking-tight text-[#2E5782] sm:text-4xl md:text-5xl lg:text-6xl"
+              initial={{ opacity: 0, x: -50, rotate: -2 }}
+              animate={{ opacity: 1, x: 0, rotate: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="mb-8 text-4xl font-black leading-[1.1] tracking-tight text-[#2E5782] sm:text-5xl md:text-6xl lg:text-7xl font-handwritten"
             >
-              Aprende inglés de forma{" "}
-              <motion.span 
-                initial={{ rotate: -5, scale: 0.8, opacity: 0 }} 
-                animate={{ rotate: 0, scale: 1, opacity: 1 }} 
-                transition={{ delay: 0.3, type: "spring", bounce: 0.6 }} 
-                className="text-[#F56B1F] inline-block font-handwritten italic text-[1.25em] -mb-2"
-              >
-                divertida
-              </motion.span>{" "}
-              y natural.
+              Aprende inglés <br />
+              <span className="text-[#F56B1F] inline-block relative">
+                viviendo historias
+                <motion.div 
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  transition={{ delay: 0.8, duration: 0.8 }}
+                  viewport={{ once: true }}
+                  className="absolute -bottom-2 left-0 right-0 h-2 bg-[#FFC800]/40 origin-left"
+                />
+              </span>
             </motion.h1>
+            
             <motion.p 
-              initial="hidden" animate="visible" custom={1} variants={fadeInUp}
-              className="mx-auto mb-10 max-w-md text-base font-bold leading-relaxed text-[#777777] sm:text-lg md:mx-0 md:text-xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="mb-10 max-w-lg text-lg font-bold leading-relaxed text-[#555555] sm:text-xl md:text-2xl"
             >
-              Aprender un idioma no debe ser aburrido. Sumérgete en historias, practica con profesores reales y sube de nivel todos los días.
+              Ling es la academia donde el idioma se aprende como un juego épico. Sumérgete en mundos, supera retos y gana fluidez real.
             </motion.p>
+            
             <motion.div 
-              initial="hidden" animate="visible" custom={2} variants={fadeInUp}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
               className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4"
             >
-              <ButtonOrange href="/register" className="w-full sm:w-auto text-lg px-10 py-4">Empieza tu viaje</ButtonOrange>
-              <ButtonOutline href="/dashboard" className="w-full sm:w-auto text-lg px-8 py-4">
+              <ButtonOrange href="/register" className="h-16 px-10 text-lg shadow-[0_15px_30px_rgba(245,107,31,0.3)] w-full sm:w-auto">
+                Empezar aventura
+              </ButtonOrange>
+              <ButtonOutline href="#method" className="h-16 px-10 text-lg w-full sm:w-auto">
                 <Play className="h-5 w-5 mr-2 fill-current" />
-                Ver demo
+                Ver método
               </ButtonOutline>
             </motion.div>
           </motion.div>
 
           <motion.div 
-            initial="hidden" animate="visible" custom={3} variants={popIn}
-            style={{ scale: scaleImage, y: yText }}
-            className="mt-2 flex flex-1 justify-center md:mt-0 relative"
+            initial={{ opacity: 0, scale: 0.5, rotate: 10, y: 50 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0, y: 0 }}
+            transition={{ duration: 1, type: "spring", bounce: 0.5 }}
+            style={{ scale: scaleImage, y: yText, rotate: rotateImage }}
+            className="mt-4 flex flex-1 justify-center md:mt-0 relative"
           >
-            <div className="absolute -inset-10 bg-[#FFC800]/30 rounded-full blur-[100px] -z-10 mix-blend-multiply opacity-60 animate-pulse" />
+            <div className="absolute -inset-20 bg-[#FFC800]/30 rounded-full blur-[120px] -z-10 mix-blend-multiply opacity-60 animate-pulse" />
             <motion.div
               animate={floatingAnimation}
               drag
-              dragConstraints={{ left: -20, right: 20, top: -20, bottom: 20 }}
-              dragElastic={0.2}
-              whileDrag={{ scale: 1.1, cursor: "grabbing" }}
-              className="relative w-full max-w-[min(100%,20rem)] drop-shadow-2xl sm:max-w-xs md:w-[420px] md:max-w-none cursor-grab"
+              dragConstraints={{ left: -30, right: 30, top: -30, bottom: 30 }}
+              dragElastic={0.3}
+              whileDrag={{ scale: 1.15, cursor: "grabbing" }}
+              className="relative w-full max-w-[min(100%,22rem)] drop-shadow-[0_35px_50px_rgba(0,0,0,0.25)] sm:max-w-xs md:w-[480px] md:max-w-none cursor-grab"
             >
               <Image
                 src="/hero-mascot.png"
                 alt="Mascota Ling"
-                width={420}
-                height={420}
+                width={480}
+                height={480}
                 className="w-full h-auto object-contain pointer-events-none"
                 priority
               />
@@ -398,7 +426,7 @@ function ManifestoSection() {
           ✨ Nuestra Filosofía
         </motion.span>
         <motion.h2 
-          className="mb-8 text-2xl font-extrabold leading-tight sm:text-3xl md:text-5xl"
+          className="mb-8 text-3xl font-black leading-tight sm:text-4xl md:text-6xl font-handwritten"
         >
           Las reglas gramaticales no te dan fluidez.
           <br className="hidden sm:block" />
@@ -408,7 +436,7 @@ function ManifestoSection() {
             whileHover={{ scale: 1.1, rotate: 2, textShadow: "0px 0px 15px rgba(245,107,31,0.6)" }}
             transition={{ delay: 0.2, type: "spring", bounce: 0.6 }}
             viewport={{ once: true }}
-            className="text-[#F56B1F] inline-block font-handwritten italic mt-2 text-[1.4em] px-2 cursor-default"
+            className="text-[#FFC800] inline-block mt-2 text-[1.2em] px-2 cursor-default"
           >
             Las historias sí.
           </motion.span>
@@ -427,41 +455,49 @@ function ManifestoSection() {
 function FeaturesSection() {
   const features = [
     {
-      title: "Modo Historia",
-      desc: "Toma decisiones en inglés dentro de relatos interactivos increíbles.",
-      icon: <Globe className="w-10 h-10 text-white" />,
-      bg: "bg-[#F56B1F]", border: "border-[#C4530D]"
-    },
-    {
-      title: "Hubs en Vivo",
-      desc: "Profesores reales en sesiones HD que te corrigen al instante de forma amigable.",
+      title: "Inmersión Total",
+      desc: "Olvida las tablas de verbos. Aprende con diálogos reales y situaciones que te importan.",
       icon: <MessageCircle className="w-10 h-10 text-white fill-current" />,
       bg: "bg-[#2E5782]", border: "border-[#1D3D5C]"
     },
     {
-      title: "Flujo Neuronal",
-      desc: "Las palabras regresan a ti antes de olvidarlas. Ciencia pura aplicada al inglés.",
+      title: "Planetas Épicos",
+      desc: "Cada nivel es un mundo nuevo por descubrir. Gana XP y desbloquea medallas únicas.",
+      icon: <Globe className="w-10 h-10 text-white" />,
+      bg: "bg-[#F56B1F]", border: "border-[#C4530D]"
+    },
+    {
+      title: "Poder Neuronal",
+      desc: "Ciencia avanzada aplicada al olvido. Las palabras se quedan en tu mente para siempre.",
       icon: <Zap className="w-10 h-10 text-white fill-current" />,
       bg: "bg-[#F56B1F]", border: "border-[#C4530D]"
     },
     {
-      title: "Niveles CEFR",
-      desc: "Seis planetas alineados con estándares internacionales, desde A1 hasta C2.",
+      title: "Protagonismo Real",
+      desc: "Nuestras lecciones son capítulos de una historia donde tú eres el héroe de la aventura.",
       icon: <Shield className="w-10 h-10 text-white" strokeWidth={2.5} />,
       bg: "bg-[#2E5782]", border: "border-[#1D3D5C]"
     }
   ];
 
   return (
-    <section className="border-b-2 border-[#E5E5E5] bg-white px-4 py-16 sm:px-6 sm:py-24 overflow-hidden">
+    <section className="border-b-2 border-[#E5E5E5] bg-white px-4 py-24 sm:px-6 sm:py-32 overflow-hidden">
       <motion.div 
         initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }}
         className="mx-auto max-w-5xl"
       >
-        <div className="mb-12 text-center sm:mb-16">
-          <motion.h2 variants={fadeInUp} className="text-2xl font-extrabold text-[#2E5782] sm:text-3xl md:text-5xl">Por qué funciona</motion.h2>
+        <div className="mb-20 text-center">
+          <motion.h2 
+            variants={fadeInUp} 
+            className="mb-4 text-4xl font-black text-[#2E5782] sm:text-6xl font-handwritten"
+          >
+            ¿Por qué <span className="text-[#F56B1F]">Ling</span>?
+          </motion.h2>
+          <p className="mx-auto max-w-xl text-sm font-black uppercase tracking-[0.3em] text-[#AFAFAF]">
+            El método definitivo para dominar el inglés
+          </p>
         </div>
-        <div className="grid gap-6 sm:gap-8 md:grid-cols-2">
+        <div className="grid gap-8 sm:gap-10 md:grid-cols-2">
           {features.map((f, i) => (
             <motion.div
               key={i}
@@ -471,15 +507,15 @@ function FeaturesSection() {
               drag
               dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
               dragElastic={0.1}
-              className="relative cursor-grab active:cursor-grabbing rounded-3xl border-2 border-[#E5E5E5] border-b-8 bg-white p-6 pt-12 transition-shadow hover:shadow-[0_20px_40px_rgba(46,87,130,0.15)] sm:p-8 sm:pt-14"
+              className="relative cursor-grab active:cursor-grabbing rounded-3xl border-2 border-[#E5E5E5] border-b-[12px] bg-white p-8 pt-16 transition-all hover:shadow-[0_30px_60px_rgba(46,87,130,0.2)] sm:p-10 sm:pt-20"
             >
               <div
-                className={`absolute -top-6 left-6 flex h-14 w-14 items-center justify-center rounded-2xl border-b-4 sm:-top-8 sm:left-8 sm:h-16 sm:w-16 ${f.bg} ${f.border}`}
+                className={`absolute -top-8 left-8 flex h-16 w-16 items-center justify-center rounded-2xl border-b-6 sm:-top-10 sm:left-10 sm:h-20 sm:w-20 ${f.bg} ${f.border}`}
               >
                 {f.icon}
               </div>
-              <h3 className="mb-2 text-xl font-extrabold text-[#2E5782] sm:mb-3 sm:text-2xl">{f.title}</h3>
-              <p className="text-base font-bold leading-relaxed text-[#777777] sm:text-lg">{f.desc}</p>
+              <h3 className="mb-4 text-2xl font-black text-[#2E5782] sm:text-3xl font-handwritten">{f.title}</h3>
+              <p className="text-lg font-bold leading-relaxed text-[#555555] sm:text-xl">{f.desc}</p>
             </motion.div>
           ))}
         </div>
@@ -491,15 +527,18 @@ function FeaturesSection() {
 // ── CURRICULUM ──────────────────────────────────────────────────
 function CurriculumSection() {
   return (
-    <section id="curriculum" className="border-b-2 border-[#E5E5E5] bg-white px-4 py-16 sm:px-6 sm:py-24 overflow-hidden">
+    <section id="curriculum" className="border-b-2 border-[#E5E5E5] bg-[#F4F4F4]/50 px-4 py-24 sm:px-6 sm:py-32 overflow-hidden">
       <motion.div 
         initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }}
-        className="mx-auto max-w-4xl text-center"
+        className="mx-auto max-w-5xl text-center"
       >
-        <motion.h2 variants={fadeInUp} className="mb-4 text-2xl font-extrabold text-[#2E5782] sm:text-3xl md:text-5xl">
-          6 Planetas. <motion.span className="font-handwritten italic text-[#F56B1F] text-[1.25em]" initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3 }} viewport={{ once:true }}>1 Destino.</motion.span>
+        <motion.h2 
+          variants={fadeInUp} 
+          className="mb-6 text-4xl font-black text-[#2E5782] sm:text-6xl font-handwritten"
+        >
+          6 Planetas. <motion.span className="text-[#F56B1F]" initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3 }} viewport={{ once:true }}>1 Destino.</motion.span>
         </motion.h2>
-        <motion.p variants={fadeInUp} custom={1} className="mb-12 text-base font-bold text-[#777777] sm:mb-16 sm:text-lg md:text-xl">Tu ruta estructurada hacia el dominio del inglés.</motion.p>
+        <motion.p variants={fadeInUp} custom={1} className="mx-auto mb-20 max-w-xl text-lg font-bold text-[#555555] sm:text-xl">Tu ruta estructurada desde lo más básico hasta la maestría total.</motion.p>
 
         <div className="relative flex flex-col items-center gap-8 py-8">
           <motion.div 
@@ -546,52 +585,29 @@ function PricingSection() {
   const { user } = useAuthStore();
 
   const handlePlanClick = async (tier: typeof SUBSCRIPTION_TIERS[number]) => {
-    // Free plan → go to register
-    if (tier.priceMonthly === 0) {
-      router.push("/register");
-      return;
-    }
-
-    // Paid plan → Stripe checkout
-    const priceId = yearly ? tier.stripePriceIdYearly : tier.stripePriceIdMonthly;
-    setLoadingPlan(tier.id);
-
-    try {
-      const res = await fetch("/api/stripe/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceId, userId: user?.uid }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || !data.url) {
-        throw new Error(data.error ?? "Error al crear sesión de pago");
-      }
-
-      window.location.href = data.url;
-    } catch (err) {
-      console.error("[Checkout]", err);
-      alert("No se pudo iniciar el pago. Intenta de nuevo.");
-    } finally {
-      setLoadingPlan(null);
-    }
+    // Pure frontend: all plans lead to registration for now
+    router.push("/register");
   };
 
   return (
-    <section id="plans" className="border-b-2 border-[#E5E5E5] bg-white px-4 py-16 pb-24 sm:px-6 sm:py-24 sm:pb-32 overflow-hidden">
+    <section id="plans" className="border-b-2 border-[#E5E5E5] bg-white px-4 py-24 pb-32 sm:px-6 sm:py-32 sm:pb-40 overflow-hidden">
       <motion.div 
         initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }}
         className="mx-auto max-w-6xl"
       >
-        <div className="mb-10 text-center sm:mb-12">
-          <motion.h2 variants={fadeInUp} className="mb-6 text-2xl font-extrabold text-[#2E5782] sm:mb-8 sm:text-3xl md:text-5xl">Nuestros Planes</motion.h2>
-          <motion.div variants={fadeInUp} custom={1} className="inline-flex max-w-full rounded-2xl border-2 border-[#E5E5E5] bg-[#F4F4F4] p-1">
+        <div className="mb-20 text-center">
+          <motion.h2 
+            variants={fadeInUp} 
+            className="mb-6 text-4xl font-black text-[#2E5782] sm:text-6xl font-handwritten"
+          >
+            Nuestros <span className="text-[#F56B1F]">Planes</span>
+          </motion.h2>
+          <motion.div variants={fadeInUp} custom={1} className="inline-flex max-w-full rounded-2xl border-2 border-[#E5E5E5] bg-[#F4F4F4] p-1.5 shadow-inner">
             <button
               type="button"
               onClick={() => setYearly(false)}
-              className={`rounded-xl px-3 py-2.5 text-xs font-extrabold uppercase tracking-widest transition-all sm:px-6 sm:py-3 sm:text-sm ${
-                !yearly ? "bg-[#2E5782] text-white" : "text-[#AFAFAF] hover:bg-white hover:text-[#2E5782]"
+              className={`rounded-xl px-5 py-3 text-sm font-black uppercase tracking-widest transition-all ${
+                !yearly ? "bg-[#2E5782] text-white shadow-lg" : "text-[#AFAFAF] hover:bg-white hover:text-[#2E5782]"
               }`}
             >
               Mensual
@@ -599,8 +615,8 @@ function PricingSection() {
             <button
               type="button"
               onClick={() => setYearly(true)}
-              className={`rounded-xl px-3 py-2.5 text-xs font-extrabold uppercase tracking-widest transition-all sm:px-6 sm:py-3 sm:text-sm ${
-                yearly ? "bg-[#2E5782] text-white" : "text-[#AFAFAF] hover:bg-white hover:text-[#2E5782]"
+              className={`rounded-xl px-5 py-3 text-sm font-black uppercase tracking-widest transition-all ${
+                yearly ? "bg-[#2E5782] text-white shadow-lg" : "text-[#AFAFAF] hover:bg-white hover:text-[#2E5782]"
               }`}
             >
               Anual -33%
@@ -608,62 +624,55 @@ function PricingSection() {
           </motion.div>
         </div>
 
-        <div className="mt-8 grid grid-cols-1 items-start gap-6 sm:mt-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid grid-cols-1 items-start gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {SUBSCRIPTION_TIERS.map((tier, i) => {
             const recommended = tier.recommended;
-            const isLoading = loadingPlan === tier.id;
-            const borderCol = recommended ? "border-[#F56B1F]" : "border-[#E5E5E5]";
+            const borderCol = recommended ? "border-[#FFC800]" : "border-[#E5E5E5]";
             const btnClass = recommended
-              ? "bg-[#F56B1F] border-[#C4530D] text-white hover:bg-[#E05C10]"
+              ? "bg-[#F56B1F] border-[#C4530D] text-white hover:bg-[#E05C10] shadow-[0_10px_20px_rgba(245,107,31,0.2)]"
               : "bg-white border-[#E5E5E5] text-[#2E5782] hover:bg-[#F4F4F4]";
             return (
               <motion.div 
                 key={tier.id} 
                 variants={fadeInUp} custom={i + 2}
-                whileHover={{ y: -15, scale: 1.05, rotate: 1, zIndex: 10, transition: { type: "spring", stiffness: 300, damping: 15 } }}
-                className={`bg-white rounded-3xl border-2 border-b-8 ${borderCol} overflow-hidden flex flex-col hover:shadow-[0_30px_60px_rgba(245,107,31,0.2)] transition-all`}
+                whileHover={{ y: -15, scale: 1.05, rotate: i % 2 === 0 ? 1 : -1, zIndex: 10, transition: { type: "spring", stiffness: 300, damping: 15 } }}
+                className={`bg-white rounded-3xl border-2 border-b-[12px] ${borderCol} overflow-hidden flex flex-col transition-all`}
               >
                 {recommended && (
-                  <div className="bg-[#F56B1F] text-center font-extrabold uppercase text-sm py-2 tracking-widest text-white">
-                    Recomendado
+                  <div className="bg-[#FFC800] text-center font-black uppercase text-xs py-2.5 tracking-widest text-[#2E5782]">
+                    Más Popular
                   </div>
                 )}
-                <div className="p-6 pb-4 text-center border-b-2 border-[#E5E5E5] bg-[#F4F4F4]">
-                  <div className="text-5xl mb-4 flex justify-center">{tier.icon}</div>
-                  <h4 className="text-2xl font-extrabold text-[#2E5782] mb-1">{tier.name}</h4>
-                  <p className="text-xs font-extrabold uppercase tracking-widest text-[#AFAFAF]">{tier.tagline}</p>
+                <div className="p-8 pb-6 text-center border-b-2 border-[#E5E5E5] bg-[#F4F4F4]/50">
+                  <div className="text-6xl mb-4 flex justify-center drop-shadow-lg">{tier.icon}</div>
+                  <h4 className="text-3xl font-black text-[#2E5782] mb-1 font-handwritten">{tier.name}</h4>
+                  <p className="text-xs font-black uppercase tracking-widest text-[#AFAFAF]">{tier.tagline}</p>
                 </div>
-                <div className="p-6 flex flex-col flex-1">
+                <div className="p-8 flex flex-col flex-1">
                   <div className="text-center mb-8">
-                    <span className="text-4xl font-extrabold text-[#2E5782]">
-                       {tier.priceMonthly === 0 ? "Gratis" : (
+                    <span className="text-5xl font-black text-[#2E5782]">
+                       {tier.priceMonthly === 0 ? "¡Gratis!" : (
                         <span className="flex items-center justify-center gap-1">
-                          <span className="text-2xl mt-1">$</span>
+                          <span className="text-3xl mt-1">$</span>
                           <span>{yearly ? Math.round(tier.priceYearly / 12) : tier.priceMonthly}</span>
                         </span>
                       )}
                     </span>
-                    {tier.priceMonthly > 0 && <span className="text-[#F56B1F] font-extrabold text-xl">/mes</span>}
+                    {tier.priceMonthly > 0 && <span className="text-[#F56B1F] font-black text-xl italic font-handwritten">/mes</span>}
                   </div>
-                  <ul className="mb-8 space-y-4 flex-1">
+                  <ul className="mb-10 space-y-5 flex-1">
                     {tier.features.slice(0, 4).map((feat, fi) => (
-                      <li key={fi} className="flex gap-3 items-start">
+                      <li key={fi} className="flex gap-4 items-start">
                         <Check className={`w-6 h-6 shrink-0 ${recommended ? "text-[#F56B1F]" : "text-[#2E5782]"}`} strokeWidth={4} />
-                        <span className="text-[#777777] font-bold leading-tight text-[15px]">{feat}</span>
+                        <span className="text-[#555555] font-bold leading-tight text-base">{feat}</span>
                       </li>
                     ))}
                   </ul>
                   <button
                     onClick={() => handlePlanClick(tier)}
-                    disabled={isLoading}
-                    className={`flex items-center justify-center gap-2 w-full rounded-2xl py-4 border-b-4 font-extrabold uppercase tracking-widest active:border-b-0 active:translate-y-1 transition-all disabled:opacity-60 disabled:cursor-not-allowed ${btnClass}`}
+                    className={`flex items-center justify-center gap-2 w-full rounded-2xl py-5 border-b-6 font-black uppercase tracking-widest active:border-b-0 active:translate-y-1 transition-all ${btnClass}`}
                   >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        Procesando…
-                      </>
-                    ) : tier.priceMonthly === 0 ? "Comenzar gratis" : "Suscribirse"}
+                    {tier.id === "free" ? "Empezar ya" : "Elegir plan"}
                   </button>
                 </div>
               </motion.div>
@@ -679,39 +688,48 @@ function PricingSection() {
 function Footer() {
   return (
     <footer
-      className="border-t-2 border-[#E5E5E5] bg-white px-4 py-12 sm:px-6 sm:py-16 md:px-10"
-      style={{ paddingBottom: "max(3rem, env(safe-area-inset-bottom))" }}
+      className="border-t-2 border-[#E5E5E5] bg-[#F4F4F4]/30 px-4 py-20 sm:px-6 sm:py-24 md:px-10"
+      style={{ paddingBottom: "max(4rem, env(safe-area-inset-bottom))" }}
     >
       <div className="mx-auto max-w-6xl">
-        <div className="flex flex-col md:flex-row justify-between gap-12 border-b-2 border-[#E5E5E5] pb-12 mb-8">
+        <div className="flex flex-col md:flex-row justify-between gap-16 border-b-2 border-[#E5E5E5] pb-16 mb-12">
           <div className="max-w-xs">
-            <Link href="/" className="flex items-center gap-2.5 mb-4">
-              <Image src="/hero-mascot.png" alt="Ling" width={40} height={40} className="h-10 w-10 object-contain" />
-              <span className="text-xl font-extrabold text-[#2E5782] tracking-tight">Ling</span>
+            <Link href="/" className="flex items-center gap-3 mb-6 group">
+              <Image src="/hero-mascot.png" alt="Ling" width={48} height={48} className="h-12 w-12 object-contain transition-transform group-hover:scale-110" />
+              <span className="text-3xl font-black text-[#2E5782] tracking-tight font-handwritten">Ling</span>
             </Link>
-            <p className="text-[#777777] font-bold leading-relaxed">Aprende idiomas de forma divertida, gratis y 100% interactiva.</p>
+            <p className="text-[#555555] font-bold text-lg leading-relaxed mb-6">Aprende inglés de forma divertida, gratis y 100% interactiva.</p>
+            <div className="flex gap-4">
+              {/* Placeholder for social links with consistent branding */}
+              {[1, 2, 3].map(i => (
+                <div key={i} className="w-10 h-10 rounded-xl bg-white border-2 border-[#E5E5E5] flex items-center justify-center text-[#AFAFAF] hover:text-[#2E5782] hover:border-[#2E5782] cursor-pointer transition-all">✨</div>
+              ))}
+            </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
             {[
-              { title: "Aprende", links: ["Cursos", "Clases", "Niveles"] },
-              { title: "Comunidad", links: ["Foros", "Profesores", "Hubs"] },
-              { title: "Compañía", links: ["Nosotros", "Blog", "Empleos"] },
-              { title: "Legal", links: ["Términos", "Privacidad", "Seguridad"] },
+              { title: "Explora", links: ["Cursos", "Planetas", "Historias"] },
+              { title: "Comunidad", links: ["Profesores", "Hubs", "Eventos"] },
+              { title: "Nosotros", links: ["Misión", "Blog", "Prensa"] },
+              { title: "Ayuda", links: ["Términos", "Privacidad", "FAQ"] },
             ].map((col) => (
               <div key={col.title}>
-                <h5 className="font-extrabold text-[#AFAFAF] uppercase tracking-widest mb-4">{col.title}</h5>
-                <ul className="space-y-3">
+                <h5 className="font-black text-[#2E5782] uppercase tracking-[0.2em] mb-6 text-sm">{col.title}</h5>
+                <ul className="space-y-4">
                   {col.links.map((l) => (
-                    <li key={l}><a href="#" className="font-bold text-[#777777] hover:text-[#1A2A6C] transition-colors">{l}</a></li>
+                    <li key={l}><a href="#" className="font-bold text-[#777777] hover:text-[#F56B1F] transition-colors">{l}</a></li>
                   ))}
                 </ul>
               </div>
             ))}
           </div>
         </div>
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <span className="font-extrabold text-[#AFAFAF] uppercase tracking-widest text-sm">© {new Date().getFullYear()} Ling</span>
-          <span className="font-extrabold text-[#1A2A6C] tracking-wider text-sm border-2 border-[#E5E5E5] bg-[#F4F4F4] rounded-xl px-4 py-2 uppercase">Español</span>
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+          <span className="font-black text-[#AFAFAF] uppercase tracking-widest text-xs">© {new Date().getFullYear()} Ling — Hecho con ✨ por Alex Andrade</span>
+          <div className="flex items-center gap-2 font-black text-[#2E5782] tracking-wider text-sm border-2 border-[#E5E5E5] bg-white rounded-2xl px-5 py-2.5 uppercase shadow-sm">
+            <Globe className="w-4 h-4" />
+            Español (Latam)
+          </div>
         </div>
       </div>
     </footer>
