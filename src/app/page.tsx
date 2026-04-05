@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Check, Play, Globe, MessageCircle, Zap, Shield, Loader2, Menu, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { playSound } from "@/utils/audio";
 import { SUBSCRIPTION_TIERS, PLANETS } from "@/types";
 import { useAuthStore } from "@/store/useAuthStore";
 
@@ -50,13 +51,13 @@ const ButtonOrange = ({
     className;
   if (href) {
     return (
-      <Link href={href} className={base} onClick={onClick}>
+      <Link href={href} className={base} onMouseEnter={() => playSound("pop")} onClick={(e) => { playSound("click"); if(onClick) onClick(); }}>
         {children}
       </Link>
     );
   }
   return (
-    <button type="button" className={base} onClick={onClick}>
+    <button type="button" className={base} onMouseEnter={() => playSound("pop")} onClick={(e) => { playSound("click"); if(onClick) onClick(); }}>
       {children}
     </button>
   );
@@ -66,8 +67,8 @@ const ButtonNavy = ({ children, href, className = "" }: { children: React.ReactN
   const base =
     "inline-flex items-center justify-center font-extrabold uppercase tracking-widest text-white bg-[#2E5782] border-b-4 border-[#1D3D5C] hover:bg-[#141F57] rounded-2xl active:border-b-0 active:translate-y-1 transition-all px-6 py-3 " +
     className;
-  if (href) return <Link href={href} className={base}>{children}</Link>;
-  return <button type="button" className={base}>{children}</button>;
+  if (href) return <Link href={href} className={base} onMouseEnter={() => playSound("pop")} onClick={() => playSound("click")}>{children}</Link>;
+  return <button type="button" className={base} onMouseEnter={() => playSound("pop")} onClick={() => playSound("click")}>{children}</button>;
 };
 
 const ButtonGhost = ({
@@ -237,11 +238,23 @@ function Navbar() {
 
 // ── HERO ────────────────────────────────────────────────────────
 function HeroSection() {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
+  
+  const yBg = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const yText = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const opacityText = useTransform(scrollYProgress, [0, 0.8, 1], [1, 0, 0]);
+  const scaleImage = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+
   return (
-    <section className="relative border-b-2 border-[#E5E5E5] bg-white pb-16 pt-[calc(5.5rem+env(safe-area-inset-top))] sm:pb-20 sm:pt-32 md:pb-24 md:pt-40 overflow-hidden">
+    <section ref={ref} className="relative border-b-2 border-[#E5E5E5] bg-white pb-16 pt-[calc(5.5rem+env(safe-area-inset-top))] sm:pb-20 sm:pt-32 md:pb-24 md:pt-40 overflow-hidden">
+      <motion.div style={{ y: yBg }} className="absolute inset-0 bg-[#F4F4F4]/30 pointer-events-none" />
       <div className="mx-auto max-w-5xl px-4 sm:px-6 md:px-8 relative z-10">
         <div className="flex flex-col items-center gap-10 md:flex-row md:gap-20">
-          <div className="flex-1 text-center md:text-left">
+          <motion.div style={{ y: yText, opacity: opacityText }} className="flex-1 text-center md:text-left">
             <motion.h1 
               initial="hidden" animate="visible" variants={fadeInUp}
               className="mb-6 text-3xl font-extrabold leading-[1.12] tracking-tight text-[#2E5782] sm:text-4xl md:text-5xl lg:text-6xl"
@@ -273,10 +286,11 @@ function HeroSection() {
                 Ver demo
               </ButtonOutline>
             </motion.div>
-          </div>
+          </motion.div>
 
           <motion.div 
             initial="hidden" animate="visible" custom={3} variants={popIn}
+            style={{ scale: scaleImage, y: yText }}
             className="mt-2 flex flex-1 justify-center md:mt-0 relative"
           >
             <div className="absolute -inset-10 bg-[#FFC800]/20 rounded-full blur-[80px] -z-10 mix-blend-multiply opacity-50" />
@@ -299,37 +313,41 @@ function HeroSection() {
 
 // ── MANIFESTO ───────────────────────────────────────────────────
 function ManifestoSection() {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "center center"] });
+  const scaleText = useTransform(scrollYProgress, [0.5, 1], [0.8, 1]);
+  const opacityText = useTransform(scrollYProgress, [0.4, 0.8], [0, 1]);
+
   return (
-    <section id="method" className="border-b-2 border-[#E5E5E5] bg-white px-4 py-16 sm:px-6 sm:py-24 overflow-hidden">
+    <section id="method" ref={ref} className="relative border-b-2 border-[#E5E5E5] bg-[#2E5782] text-white px-4 py-20 sm:px-6 sm:py-32 overflow-hidden">
       <motion.div 
-        initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}
-        className="mx-auto max-w-4xl text-center flex flex-col items-center"
+        style={{ scale: scaleText, opacity: opacityText }}
+        className="mx-auto max-w-4xl text-center flex flex-col items-center relative z-10"
       >
         <motion.span 
-          variants={fadeInUp}
-          className="inline-flex items-center gap-2 mb-6 uppercase tracking-[0.2em] font-extrabold text-[#777777] border-2 border-[#E5E5E5] bg-[#F4F4F4] rounded-full px-5 py-2 text-sm"
+          onViewportEnter={() => playSound("whoosh")}
+          className="inline-flex items-center gap-2 mb-6 uppercase tracking-[0.2em] font-extrabold text-[#AFAFAF] border-2 border-[#1D3D5C] bg-[#141F57] rounded-full px-5 py-2 text-sm"
         >
           ✨ Nuestra Filosofía
         </motion.span>
         <motion.h2 
-          variants={fadeInUp} custom={1}
-          className="mb-8 text-2xl font-extrabold leading-tight text-[#2E5782] sm:text-3xl md:text-5xl"
+          className="mb-8 text-2xl font-extrabold leading-tight sm:text-3xl md:text-5xl"
         >
           Las reglas gramaticales no te dan fluidez.
           <br className="hidden sm:block" />
           <motion.span 
             initial={{ rotate: 5, scale: 0.9, opacity: 0 }} 
             whileInView={{ rotate: -2, scale: 1, opacity: 1 }} 
-            transition={{ delay: 0.4, type: "spring", bounce: 0.6 }}
+            transition={{ delay: 0.2, type: "spring", bounce: 0.6 }}
             viewport={{ once: true }}
+            onViewportEnter={() => playSound("pop")}
             className="text-[#F56B1F] inline-block font-handwritten italic mt-2 text-[1.4em] px-2"
           >
             Las historias sí.
           </motion.span>
         </motion.h2>
         <motion.p 
-          variants={fadeInUp} custom={2}
-          className="mx-auto max-w-2xl text-base font-bold leading-relaxed text-[#777777] sm:text-lg md:text-xl"
+          className="mx-auto max-w-2xl text-base font-bold leading-relaxed text-[#D4D4D4] sm:text-lg md:text-xl"
         >
           Toda nuestra academia gira en torno a esta idea. Aprenderás inmerso en relatos donde cada decisión se siente como un juego real.
         </motion.p>
@@ -424,7 +442,10 @@ function CurriculumSection() {
               <motion.div 
                 variants={popIn} custom={i + 2}
                 key={planet.id} 
-                className={`relative z-10 flex flex-col items-center cursor-default transition-transform hover:scale-110 ${offsetClass}`}
+                onViewportEnter={() => playSound("pop")}
+                whileHover={{ scale: 1.15, transition: { duration: 0.2, type: "spring", stiffness: 300 } }}
+                onHoverStart={() => playSound("pop")}
+                className={`relative z-10 flex flex-col items-center cursor-pointer ${offsetClass}`}
               >
                 <div className="w-24 h-24 mb-4 rounded-full bg-[#2E5782] border-b-4 border-[#1D3D5C] flex items-center justify-center text-5xl shadow-lg">
                   {planet.icon}
@@ -524,8 +545,9 @@ function PricingSection() {
               <motion.div 
                 key={tier.id} 
                 variants={fadeInUp} custom={i + 2}
-                whileHover={{ y: -8 }}
-                className={`bg-white rounded-3xl border-2 border-b-8 ${borderCol} overflow-hidden flex flex-col hover:shadow-xl transition-shadow`}
+                whileHover={{ y: -12, scale: 1.02 }}
+                onHoverStart={() => playSound("pop")}
+                className={`bg-white rounded-3xl border-2 border-b-8 ${borderCol} overflow-hidden flex flex-col hover:shadow-2xl transition-shadow`}
               >
                 {recommended && (
                   <div className="bg-[#F56B1F] text-center font-extrabold uppercase text-sm py-2 tracking-widest text-white">
