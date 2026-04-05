@@ -83,7 +83,7 @@ function VocabCard({ data }: { data: { word: string; translation: string; pronun
           <div className="font-handwritten text-xl text-landing-text/80">{data.pronunciation}</div>
           <button
             onClick={(e) => { e.stopPropagation(); /* play audio */ }}
-            className="mt-3 rounded-full bg-white/40 p-2 transition-colors hover:bg-white/60"
+            className="mt-3 rounded-full bg-white/40 p-3 transition-colors hover:bg-white/60 active:bg-white/80"
           >
             <Volume2 className="h-5 w-5 text-landing-purple" />
           </button>
@@ -315,17 +315,17 @@ export default function LessonPage({
 
           <div className="lpa-card mb-8 space-y-4 p-6 text-left">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase tracking-widest text-landing-faint">Score</span>
+              <span className="text-xs font-black uppercase tracking-widest text-landing-faint">Score</span>
               <span className="text-lg font-black text-landing-purple">{score}%</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase tracking-widest text-landing-faint">XP earned</span>
+              <span className="text-xs font-black uppercase tracking-widest text-landing-faint">XP earned</span>
               <span className="rounded-full border-2 border-landing-yellow px-3 py-1 text-xs font-black text-landing-purple">
                 +{xpEarned} XP
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase tracking-widest text-landing-faint">Correct</span>
+              <span className="text-xs font-black uppercase tracking-widest text-landing-faint">Correct</span>
               <span className="font-black text-landing-text">
                 {correct}/{lesson.content.exercises.length}
               </span>
@@ -354,7 +354,7 @@ export default function LessonPage({
             <ArrowLeft className="h-6 w-6" />
           </Link>
           <div className="min-w-0 flex-1">
-            <div className="mb-1 truncate text-[10px] font-black uppercase tracking-widest text-landing-muted">{lesson.title}</div>
+            <div className="mb-1 truncate text-xs font-black uppercase tracking-widest text-landing-muted">{lesson.title}</div>
             <div className="lpa-progress-track">
               <motion.div
                 className="lpa-progress-fill"
@@ -363,7 +363,7 @@ export default function LessonPage({
               />
             </div>
           </div>
-          <div className="flex shrink-0 items-center gap-1 rounded-full border-2 border-landing-yellow bg-landing-surface px-2.5 py-1 text-[10px] font-black text-landing-purple">
+          <div className="flex shrink-0 items-center gap-1 rounded-full border-2 border-landing-yellow bg-landing-surface px-2.5 py-1 text-xs font-black text-landing-purple">
             <Star className="h-3 w-3" />
             {xpEarned} XP
           </div>
@@ -431,7 +431,7 @@ export default function LessonPage({
             {/* Exercise */}
             {!isOnBlock && currentExercise && (
               <div className="lpa-card p-6">
-                <div className="mb-6 flex flex-wrap items-center gap-2 text-[10px] font-black uppercase tracking-widest text-landing-faint">
+                <div className="mb-6 flex flex-wrap items-center gap-2 text-xs font-black uppercase tracking-widest text-landing-faint">
                   <span className="rounded-full border-2 border-landing-border px-2 py-0.5 text-landing-purple">
                     Exercise {exerciseIndex + 1}/{lesson.content.exercises.length}
                   </span>

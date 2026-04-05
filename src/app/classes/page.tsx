@@ -53,11 +53,11 @@ export default function ClassesPage() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <h2 className="truncate font-black uppercase tracking-tight text-landing-text">{row.title}</h2>
-                  <p className="text-[10px] font-black uppercase tracking-wider text-landing-faint">
+                  <p className="text-xs font-black uppercase tracking-wider text-landing-faint">
                     {row.teacherName} · {row.cefrLevel} · {row.durationMinutes} min
                   </p>
                 </div>
-                <span className="lpa-btn-gold shrink-0 py-2.5 px-4 text-[10px]">Join</span>
+                <span className="lpa-btn-gold shrink-0 py-2.5 px-4 text-xs">Join</span>
               </Link>
             </motion.li>
           ))}

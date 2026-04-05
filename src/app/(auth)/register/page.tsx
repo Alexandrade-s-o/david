@@ -206,7 +206,7 @@ export default function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-landing-faint transition-colors hover:text-landing-purple"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center text-landing-faint transition-colors hover:text-landing-purple"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -249,13 +249,13 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          <p className="mt-6 text-center text-[10px] font-black uppercase tracking-widest text-landing-faint">
+          <p className="mt-6 text-center text-xs font-black uppercase tracking-widest text-landing-faint">
             Have an account?{" "}
             <Link href="/login" className="text-landing-purple transition-colors hover:text-landing-purpleDark">
               Sign in
             </Link>
           </p>
-          <p className="mt-3 text-center text-[10px] font-bold uppercase leading-relaxed text-landing-faint/80">
+          <p className="mt-3 text-center text-xs font-bold uppercase leading-relaxed text-landing-faint/80">
             By signing up you agree to our <a href="#" className="text-landing-purple underline">Terms</a> and{" "}
             <a href="#" className="text-landing-purple underline">Privacy</a>.
           </p>

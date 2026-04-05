@@ -59,13 +59,13 @@ export default function CoursesIndexPage() {
                   >
                     <span className="animate-float">{planet.icon}</span>
                   </div>
-                  <div className="flex flex-1 flex-col p-6">
+                  <div className="flex flex-1 flex-col p-4 sm:p-6">
                     <span className="lpa-pill-tag mb-3 self-start">{course.cefrLevel}</span>
                     <h2 className="mb-2 font-black uppercase tracking-tight text-landing-text">{course.title}</h2>
                     <p className="mb-4 flex-1 text-xs font-bold uppercase leading-relaxed text-landing-muted">
                       {course.description}
                     </p>
-                    <div className="mb-5 flex flex-wrap gap-4 text-[10px] font-black uppercase tracking-wider text-landing-faint">
+                    <div className="mb-5 flex flex-wrap gap-4 text-xs font-black uppercase tracking-wider text-landing-faint">
                       <span className="flex items-center gap-1">
                         <BookOpen className="h-3.5 w-3.5 text-landing-purple" />
                         {course.totalLessons} lessons
@@ -83,7 +83,7 @@ export default function CoursesIndexPage() {
                         {course.rating}
                       </span>
                     </div>
-                    <Link href={`/courses/${course.id}`} className="lpa-btn-gold justify-center py-3 text-[10px]">
+                    <Link href={`/courses/${course.id}`} className="lpa-btn-gold justify-center py-3 min-h-[44px] text-xs">
                       Open course
                     </Link>
                   </div>

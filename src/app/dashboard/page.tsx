@@ -30,7 +30,7 @@ function StatCard({ icon, label, value, accent }: { icon: React.ReactNode; label
       </div>
       <div>
         <div className="text-2xl font-black text-[#2E5782]">{value}</div>
-        <div className="text-[10px] font-extrabold uppercase tracking-widest text-[#AFAFAF]">{label}</div>
+        <div className="text-xs font-extrabold uppercase tracking-widest text-[#AFAFAF]">{label}</div>
       </div>
     </motion.div>
   );
@@ -47,7 +47,7 @@ function XPProgress({ xp, level }: { xp: number; level: number }) {
         {level}
       </div>
       <div className="flex-1">
-        <div className="mb-1.5 flex flex-col gap-0.5 text-[10px] font-black uppercase tracking-wider text-[#AFAFAF] min-[380px]:flex-row min-[380px]:justify-between">
+        <div className="mb-1.5 flex flex-col gap-0.5 text-xs font-black uppercase tracking-wider text-[#AFAFAF] min-[380px]:flex-row min-[380px]:justify-between">
           <span className="truncate">{xp.toLocaleString()} XP</span>
           <span className="truncate text-right">Siguiente: {xpForNextLevel.toLocaleString()} XP</span>
         </div>
@@ -70,7 +70,7 @@ function PlanetMap({ currentPlanet }: { currentPlanet: string }) {
     <div className="bg-white rounded-2xl border-2 border-[#E5E5E5] p-6">
       <div className="flex items-center justify-between mb-5">
         <h3 className="text-xs font-black uppercase tracking-[0.25em] text-[#AFAFAF]">Tu galaxia</h3>
-        <Link href="/courses" className="text-[10px] font-black uppercase tracking-widest text-[#2E5782] hover:text-[#F56B1F] transition-colors flex items-center gap-1">
+        <Link href="/courses" className="text-xs font-black uppercase tracking-widest text-[#2E5782] hover:text-[#F56B1F] transition-colors flex items-center gap-1">
           Ver todo <ArrowRight className="w-3 h-3" />
         </Link>
       </div>
@@ -104,7 +104,7 @@ function PlanetMap({ currentPlanet }: { currentPlanet: string }) {
                     </div>
                   )}
                 </div>
-                <span className="text-[9px] font-black uppercase tracking-wider text-[#AFAFAF]">{planet.cefrLevel}</span>
+                <span className="text-xs font-black uppercase tracking-wider text-[#AFAFAF]">{planet.cefrLevel}</span>
               </motion.div>
               {i < PLANETS.length - 1 && <div className="w-6 h-px bg-[#E5E5E5] shrink-0" />}
             </div>
@@ -125,18 +125,18 @@ function CourseCard({ course, progress }: { course: Partial<Course>; progress: n
         style={{ background: `linear-gradient(135deg, ${planet?.color}22, ${planet?.color}08)` }}
       >
         <span>{planet?.icon}</span>
-        <span className="absolute top-3 right-3 text-[9px] font-black uppercase tracking-[0.15em] text-white bg-[#2E5782] rounded-lg px-2 py-1">
+        <span className="absolute top-3 right-3 text-xs font-black uppercase tracking-[0.15em] text-white bg-[#2E5782] rounded-lg px-2 py-1">
           {course.cefrLevel}
         </span>
       </div>
       <div className="p-4">
         <h4 className="text-sm font-black uppercase tracking-tight text-[#2E5782] mb-2 line-clamp-2">{course.title}</h4>
-        <div className="flex items-center gap-3 text-[9px] font-bold uppercase tracking-wider text-[#AFAFAF] mb-3">
+        <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-wider text-[#AFAFAF] mb-3">
           <span className="flex items-center gap-1"><BookOpen className="w-3 h-3 text-[#F56B1F]" />{course.totalLessons} lecciones</span>
           <span className="flex items-center gap-1"><Users className="w-3 h-3 text-[#F56B1F]" />{course.enrolledCount?.toLocaleString()}</span>
         </div>
         <div className="mb-3">
-          <div className="flex justify-between text-[9px] font-black uppercase mb-1 text-[#AFAFAF]">
+          <div className="flex justify-between text-xs font-black uppercase mb-1 text-[#AFAFAF]">
             <span>Progreso</span><span className="text-[#F56B1F]">{progress}%</span>
           </div>
           <div className="h-2 rounded-full bg-[#F4F4F4] overflow-hidden">
@@ -149,7 +149,7 @@ function CourseCard({ course, progress }: { course: Partial<Course>; progress: n
           </div>
         </div>
         <Link href={`/courses/${course.id}`}
-          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[#2E5782] border-b-2 border-[#1D3D5C] text-white text-[9px] font-black uppercase tracking-widest hover:bg-[#1D3D5C] active:border-b-0 active:translate-y-[1px] transition-all">
+          className="flex items-center justify-center gap-2 w-full min-h-[44px] py-3 rounded-xl bg-[#2E5782] border-b-2 border-[#1D3D5C] text-white text-xs font-black uppercase tracking-widest hover:bg-[#1D3D5C] active:border-b-0 active:translate-y-[1px] transition-all">
           <Play className="w-3 h-3 fill-current" />
           {progress > 0 ? "Continuar" : "Comenzar"}
         </Link>
@@ -176,13 +176,13 @@ function ClassCard({ cls }: { cls: Partial<LiveClass> }) {
         </div>
         <div className="min-w-0 flex-1">
           <div className="truncate text-xs font-black uppercase tracking-tight text-[#2E5782]">{cls.title}</div>
-          <div className="mt-0.5 truncate text-[9px] font-bold uppercase tracking-wide text-[#AFAFAF]">
+          <div className="mt-0.5 truncate text-xs font-bold uppercase tracking-wide text-[#AFAFAF]">
             {cls.teacherName} · {cls.cefrLevel} · {cls.durationMinutes}min
           </div>
         </div>
       </div>
       <div className="flex shrink-0 items-center justify-between gap-3 sm:flex-col sm:items-end sm:justify-center sm:gap-1.5">
-        <div className="text-[9px] font-black text-[#F56B1F] sm:text-right">
+        <div className="text-xs font-black text-[#F56B1F] sm:text-right">
           {hoursUntil > 0 ? `${hoursUntil}h ${minutesUntil}m` : `${minutesUntil}m`}
         </div>
         <Link
@@ -267,7 +267,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-[#F9F9F9] text-[#4B4B4B] overflow-x-hidden">
       <LpaDashboardNav firstName={firstName} />
 
-      <div className="mx-auto max-w-6xl space-y-6 px-3 py-6 sm:px-4 md:px-6 md:py-8">
+      <div className="mx-auto max-w-6xl space-y-6 px-4 py-6 md:px-6 md:py-8">
 
         {/* ── WELCOME CARD ── */}
         <motion.div
@@ -276,7 +276,7 @@ export default function DashboardPage() {
           className="flex flex-col items-center gap-6 rounded-3xl border-2 border-[#E5E5E5] border-b-4 bg-white p-5 sm:p-6 md:flex-row md:p-8"
         >
           <div className="w-full min-w-0 flex-1">
-            <p className="mb-1 text-[10px] font-black uppercase tracking-[0.3em] text-[#AFAFAF]">{greeting}</p>
+            <p className="mb-1 text-xs font-black uppercase tracking-[0.3em] text-[#AFAFAF]">{greeting}</p>
             <h1 className="mb-4 text-2xl font-black uppercase tracking-tight text-[#2E5782] sm:text-3xl md:text-5xl">
               {firstName}!
             </h1>
@@ -327,7 +327,7 @@ export default function DashboardPage() {
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-black uppercase tracking-tight text-[#2E5782]">Tus cursos</h2>
-              <Link href="/courses" className="text-[10px] font-black uppercase tracking-widest text-[#F56B1F] hover:text-[#C4530D] transition-colors flex items-center gap-1">
+              <Link href="/courses" className="text-xs font-black uppercase tracking-widest text-[#F56B1F] hover:text-[#C4530D] transition-colors flex items-center gap-1">
                 Ver todos <ChevronRight className="w-3 h-3" />
               </Link>
             </div>
@@ -351,7 +351,7 @@ export default function DashboardPage() {
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-black uppercase tracking-tight text-[#2E5782]">Clases en vivo</h2>
-                <Link href="/classes" className="text-[10px] font-black uppercase tracking-widest text-[#F56B1F] hover:text-[#C4530D] transition-colors flex items-center gap-1">
+                <Link href="/classes" className="text-xs font-black uppercase tracking-widest text-[#F56B1F] hover:text-[#C4530D] transition-colors flex items-center gap-1">
                   Ver más <ChevronRight className="w-3 h-3" />
                 </Link>
               </div>
@@ -368,11 +368,11 @@ export default function DashboardPage() {
 
             {/* Vocab Review Widget */}
             <div className="bg-[#2E5782] rounded-2xl border-b-4 border-[#1D3D5C] p-5 text-white">
-              <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/60 mb-1">Pendiente hoy</p>
+              <p className="text-xs font-black uppercase tracking-[0.25em] text-white/60 mb-1">Pendiente hoy</p>
               <h3 className="text-2xl font-black mb-1">Vocabulario</h3>
               <p className="text-sm font-bold text-white/70 mb-4 leading-snug">Tu revisión diaria de vocabulario está lista.</p>
               <Link href="/vocab-review"
-                className="inline-flex items-center gap-2 rounded-xl bg-[#F56B1F] border-b-2 border-[#C4530D] px-4 py-2.5 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[#E05C10] active:border-b-0 active:translate-y-[1px] transition-all">
+                className="inline-flex items-center gap-2 rounded-xl bg-[#F56B1F] border-b-2 border-[#C4530D] px-4 py-2.5 text-xs font-black uppercase tracking-widest text-white hover:bg-[#E05C10] active:border-b-0 active:translate-y-[1px] transition-all">
                 Revisar ahora <ArrowRight className="w-3 h-3" />
               </Link>
             </div>

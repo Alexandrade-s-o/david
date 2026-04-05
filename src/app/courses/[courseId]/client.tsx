@@ -55,9 +55,9 @@ export default function CourseDetailPage({ params }: { params: { courseId: strin
   return (
     <div className="lpa-page">
       <nav className="sticky top-0 z-50 border-b-2 border-landing-border bg-white font-bold">
-        <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-6 py-3">
+        <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-3">
           <Link href="/courses" className="lpa-link">← Courses</Link>
-          <span className="truncate text-center text-[10px] font-black uppercase tracking-widest text-landing-text">Course</span>
+          <span className="truncate text-center text-xs font-black uppercase tracking-widest text-landing-text">Course</span>
           <Link href="/dashboard" className="lpa-link text-right">Hub →</Link>
         </div>
       </nav>
@@ -66,9 +66,9 @@ export default function CourseDetailPage({ params }: { params: { courseId: strin
         <div className="stars-bg pointer-events-none absolute inset-0 opacity-20" />
         <div className="relative z-10 mx-auto max-w-3xl">
           <div className="flex items-start gap-6">
-            <div className="text-7xl drop-shadow-sm">{planet.icon}</div>
+            <div className="text-5xl drop-shadow-sm sm:text-7xl">{planet.icon}</div>
             <div>
-              <p className="mb-2 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.35em] text-landing-purple">
+              <p className="mb-2 flex items-center gap-2 text-xs font-black uppercase tracking-[0.35em] text-landing-purple">
                 <Sparkles className="h-3.5 w-3.5" />
                 Academy track
               </p>
@@ -80,7 +80,7 @@ export default function CourseDetailPage({ params }: { params: { courseId: strin
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <span className="lpa-pill-tag">{course.cefrLevel}</span>
-                <span className="rounded-full border-2 border-landing-border bg-white px-3 py-1 text-[10px] font-black uppercase tracking-widest text-landing-text">
+                <span className="rounded-full border-2 border-landing-border bg-white px-3 py-1 text-xs font-black uppercase tracking-widest text-landing-text">
                   {course.totalLessons} lessons
                 </span>
               </div>
@@ -116,7 +116,7 @@ export default function CourseDetailPage({ params }: { params: { courseId: strin
                           <div className="text-sm font-black uppercase tracking-tight text-landing-text/80">
                             {index + 1}. {lesson.title}
                           </div>
-                          <div className="text-[10px] font-black uppercase tracking-wider text-landing-faint">
+                          <div className="text-xs font-black uppercase tracking-wider text-landing-faint">
                             {lesson.estimatedMinutes} min · Premium
                           </div>
                         </div>
@@ -133,12 +133,12 @@ export default function CourseDetailPage({ params }: { params: { courseId: strin
                           <div className="font-black uppercase tracking-tight text-landing-text">
                             {index + 1}. {lesson.title}
                           </div>
-                          <div className="text-[10px] font-black uppercase tracking-wider text-landing-faint">
+                          <div className="text-xs font-black uppercase tracking-wider text-landing-faint">
                             {lesson.estimatedMinutes} min · {lesson.type}
                           </div>
                         </div>
                         {done && (
-                          <span className="text-[10px] font-black uppercase tracking-widest text-green-500">
+                          <span className="text-xs font-black uppercase tracking-widest text-green-500">
                             ✓ Done
                           </span>
                         )}
