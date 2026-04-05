@@ -290,6 +290,7 @@ export default function LessonPage({
     } else {
       setStep(prev => prev + 1);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step, exerciseIndex, correct, totalSteps, lesson.content.exercises.length]);
 
   // ── COMPLETION SCREEN ─────────────────────────────────────────
