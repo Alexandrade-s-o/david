@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Check, Play, Globe, MessageCircle, Zap, Shield, Loader2, Menu, X } from "lucide-react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { playSound } from "@/utils/audio";
 import { SUBSCRIPTION_TIERS, PLANETS } from "@/types";
 import { useAuthStore } from "@/store/useAuthStore";
 
@@ -21,12 +20,22 @@ const fadeInUp = {
 };
 
 const popIn = {
-  hidden: { opacity: 0, scale: 0.8 },
+  hidden: { opacity: 0, scale: 0.5, rotate: -10 },
   visible: (custom: number = 0) => ({
     opacity: 1,
     scale: 1,
-    transition: { delay: custom * 0.1, duration: 0.6, type: "spring", bounce: 0.5 },
+    rotate: 0,
+    transition: { delay: custom * 0.1, duration: 0.8, type: "spring", bounce: 0.6 },
   }),
+};
+
+const floatingAnimation = {
+  y: ["-3%", "3%", "-3%"],
+  transition: {
+    duration: 4,
+    ease: "easeInOut",
+    repeat: Infinity,
+  },
 };
 
 // ── PALETTE ────────────────────────────────────────────────────────
@@ -49,16 +58,23 @@ const ButtonOrange = ({
   const base =
     "inline-flex items-center justify-center font-extrabold uppercase tracking-widest text-white bg-[#F56B1F] border-b-4 border-[#C4530D] hover:bg-[#E05C10] rounded-2xl active:border-b-0 active:translate-y-1 transition-all px-6 py-3 " +
     className;
+  
+  const inner = (
+    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex items-center justify-center w-full h-full">
+      {children}
+    </motion.div>
+  );
+
   if (href) {
     return (
-      <Link href={href} className={base} onMouseEnter={() => playSound("pop")} onClick={(e) => { playSound("click"); if(onClick) onClick(); }}>
-        {children}
+      <Link href={href} className={base} onClick={onClick}>
+        {inner}
       </Link>
     );
   }
   return (
-    <button type="button" className={base} onMouseEnter={() => playSound("pop")} onClick={(e) => { playSound("click"); if(onClick) onClick(); }}>
-      {children}
+    <button type="button" className={base} onClick={onClick}>
+      {inner}
     </button>
   );
 };
@@ -67,8 +83,13 @@ const ButtonNavy = ({ children, href, className = "" }: { children: React.ReactN
   const base =
     "inline-flex items-center justify-center font-extrabold uppercase tracking-widest text-white bg-[#2E5782] border-b-4 border-[#1D3D5C] hover:bg-[#141F57] rounded-2xl active:border-b-0 active:translate-y-1 transition-all px-6 py-3 " +
     className;
-  if (href) return <Link href={href} className={base} onMouseEnter={() => playSound("pop")} onClick={() => playSound("click")}>{children}</Link>;
-  return <button type="button" className={base} onMouseEnter={() => playSound("pop")} onClick={() => playSound("click")}>{children}</button>;
+  const inner = (
+    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex items-center justify-center w-full h-full">
+      {children}
+    </motion.div>
+  );
+  if (href) return <Link href={href} className={base}>{inner}</Link>;
+  return <button type="button" className={base}>{inner}</button>;
 };
 
 const ButtonGhost = ({
@@ -293,17 +314,24 @@ function HeroSection() {
             style={{ scale: scaleImage, y: yText }}
             className="mt-2 flex flex-1 justify-center md:mt-0 relative"
           >
-            <div className="absolute -inset-10 bg-[#FFC800]/20 rounded-full blur-[80px] -z-10 mix-blend-multiply opacity-50" />
-            <div className="relative w-full max-w-[min(100%,20rem)] drop-shadow-xl sm:max-w-xs md:w-[420px] md:max-w-none">
+            <div className="absolute -inset-10 bg-[#FFC800]/30 rounded-full blur-[100px] -z-10 mix-blend-multiply opacity-60 animate-pulse" />
+            <motion.div
+              animate={floatingAnimation}
+              drag
+              dragConstraints={{ left: -20, right: 20, top: -20, bottom: 20 }}
+              dragElastic={0.2}
+              whileDrag={{ scale: 1.1, cursor: "grabbing" }}
+              className="relative w-full max-w-[min(100%,20rem)] drop-shadow-2xl sm:max-w-xs md:w-[420px] md:max-w-none cursor-grab"
+            >
               <Image
                 src="/hero-mascot.png"
                 alt="Mascota Ling"
                 width={420}
                 height={420}
-                className="w-full h-auto object-contain"
+                className="w-full h-auto object-contain pointer-events-none"
                 priority
               />
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </div>
@@ -325,8 +353,8 @@ function ManifestoSection() {
         className="mx-auto max-w-4xl text-center flex flex-col items-center relative z-10"
       >
         <motion.span 
-          onViewportEnter={() => playSound("whoosh")}
-          className="inline-flex items-center gap-2 mb-6 uppercase tracking-[0.2em] font-extrabold text-[#AFAFAF] border-2 border-[#1D3D5C] bg-[#141F57] rounded-full px-5 py-2 text-sm"
+          animate={floatingAnimation}
+          className="inline-flex items-center gap-2 mb-6 uppercase tracking-[0.2em] font-extrabold text-[#AFAFAF] border-2 border-[#1D3D5C] bg-[#141F57] rounded-full px-5 py-2 text-sm shadow-[0_0_20px_rgba(255,255,255,0.1)]"
         >
           ✨ Nuestra Filosofía
         </motion.span>
@@ -336,12 +364,12 @@ function ManifestoSection() {
           Las reglas gramaticales no te dan fluidez.
           <br className="hidden sm:block" />
           <motion.span 
-            initial={{ rotate: 5, scale: 0.9, opacity: 0 }} 
+            initial={{ rotate: 10, scale: 0.5, opacity: 0 }} 
             whileInView={{ rotate: -2, scale: 1, opacity: 1 }} 
+            whileHover={{ scale: 1.1, rotate: 2, textShadow: "0px 0px 15px rgba(245,107,31,0.6)" }}
             transition={{ delay: 0.2, type: "spring", bounce: 0.6 }}
             viewport={{ once: true }}
-            onViewportEnter={() => playSound("pop")}
-            className="text-[#F56B1F] inline-block font-handwritten italic mt-2 text-[1.4em] px-2"
+            className="text-[#F56B1F] inline-block font-handwritten italic mt-2 text-[1.4em] px-2 cursor-default"
           >
             Las historias sí.
           </motion.span>
@@ -400,8 +428,11 @@ function FeaturesSection() {
               key={i}
               variants={fadeInUp}
               custom={i + 1}
-              whileHover={{ y: -8, transition: { duration: 0.2 } }}
-              className="relative cursor-default rounded-3xl border-2 border-[#E5E5E5] border-b-8 bg-white p-6 pt-12 transition-shadow hover:shadow-xl sm:p-8 sm:pt-14"
+              whileHover={{ y: -12, scale: 1.02, rotate: i % 2 === 0 ? 1 : -1, transition: { type: "spring", stiffness: 300 } }}
+              drag
+              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              dragElastic={0.1}
+              className="relative cursor-grab active:cursor-grabbing rounded-3xl border-2 border-[#E5E5E5] border-b-8 bg-white p-6 pt-12 transition-shadow hover:shadow-[0_20px_40px_rgba(46,87,130,0.15)] sm:p-8 sm:pt-14"
             >
               <div
                 className={`absolute -top-6 left-6 flex h-14 w-14 items-center justify-center rounded-2xl border-b-4 sm:-top-8 sm:left-8 sm:h-16 sm:w-16 ${f.bg} ${f.border}`}
@@ -437,20 +468,25 @@ function CurriculumSection() {
             className="absolute top-10 bottom-10 left-1/2 w-4 bg-[#E5E5E5] -mx-2 rounded-full z-0"
           />
           {PLANETS.map((planet, i) => {
-            const offsetClass = i % 2 === 0 ? "md:-translate-x-24" : "md:translate-x-24";
+            const offsetClass = i % 2 === 0 ? "md:-translate-x-32" : "md:translate-x-32";
             return (
               <motion.div 
                 variants={popIn} custom={i + 2}
                 key={planet.id} 
-                onViewportEnter={() => playSound("pop")}
-                whileHover={{ scale: 1.15, transition: { duration: 0.2, type: "spring", stiffness: 300 } }}
-                onHoverStart={() => playSound("pop")}
-                className={`relative z-10 flex flex-col items-center cursor-pointer ${offsetClass}`}
+                animate={floatingAnimation}
+                whileHover={{ scale: 1.25, rotate: i % 2 === 0 ? 5 : -5, transition: { type: "spring", stiffness: 400 } }}
+                drag
+                dragConstraints={{ left: -50, right: 50, top: -50, bottom: 50 }}
+                dragElastic={0.4}
+                className={`relative z-10 flex flex-col items-center cursor-grab active:cursor-grabbing ${offsetClass}`}
               >
-                <div className="w-24 h-24 mb-4 rounded-full bg-[#2E5782] border-b-4 border-[#1D3D5C] flex items-center justify-center text-5xl shadow-lg">
+                <motion.div 
+                  whileHover={{ boxShadow: "0 0 30px rgba(46,87,130,0.6)" }}
+                  className="w-24 h-24 mb-4 rounded-full bg-[#2E5782] border-b-4 border-[#1D3D5C] flex items-center justify-center text-5xl shadow-xl z-20 relative"
+                >
                   {planet.icon}
-                </div>
-                <div className="bg-white px-5 py-3 rounded-2xl border-2 border-[#E5E5E5] border-b-4 text-center min-w-[140px] shadow-sm">
+                </motion.div>
+                <div className="bg-white px-5 py-3 rounded-2xl border-2 border-[#E5E5E5] border-b-4 text-center min-w-[140px] shadow-md z-10 relative">
                   <span className="block text-sm font-extrabold text-[#F56B1F] uppercase tracking-widest mb-1">{planet.cefrLevel}</span>
                   <strong className="text-[#2E5782] text-xl font-extrabold">{planet.name}</strong>
                 </div>
@@ -545,9 +581,8 @@ function PricingSection() {
               <motion.div 
                 key={tier.id} 
                 variants={fadeInUp} custom={i + 2}
-                whileHover={{ y: -12, scale: 1.02 }}
-                onHoverStart={() => playSound("pop")}
-                className={`bg-white rounded-3xl border-2 border-b-8 ${borderCol} overflow-hidden flex flex-col hover:shadow-2xl transition-shadow`}
+                whileHover={{ y: -15, scale: 1.05, rotate: 1, zIndex: 10, transition: { type: "spring", stiffness: 300, damping: 15 } }}
+                className={`bg-white rounded-3xl border-2 border-b-8 ${borderCol} overflow-hidden flex flex-col hover:shadow-[0_30px_60px_rgba(245,107,31,0.2)] transition-all`}
               >
                 {recommended && (
                   <div className="bg-[#F56B1F] text-center font-extrabold uppercase text-sm py-2 tracking-widest text-white">
