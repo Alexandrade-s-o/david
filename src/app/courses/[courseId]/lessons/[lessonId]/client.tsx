@@ -95,7 +95,7 @@ function VocabCard({ data }: { data: { word: string; translation: string; pronun
           style={{ transform: "rotateY(180deg)" }}
         >
           <div className="mb-2 font-display text-3xl font-black text-landing-text">{data.translation}</div>
-          <p className="text-center text-sm font-bold uppercase italic text-landing-muted">"{data.example}"</p>
+          <p className="text-center text-sm font-bold uppercase italic text-landing-muted">&quot;{data.example}&quot;</p>
         </div>
       </motion.div>
     </motion.div>
